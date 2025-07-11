@@ -5,31 +5,160 @@
     <title>SNC Ker Nathalas Companion App</title>
     <link rel="stylesheet" href="styles.css">
 </head>
+
+<style>
+	#button-container {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+		gap: 1rem;
+		padding: 1rem;
+	}
+
+	.button-pair {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		background: #f9f9f9;
+		padding: 1rem;
+		border: 1px solid #ddd;
+		border-radius: 8px;
+		box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+	}
+
+	.btn {
+		padding: 0.5em 1em;
+		font-size: 1rem;
+		border-radius: 4px;
+		border: none;
+		cursor: pointer;
+		background-color: #007bff;
+		color: white;
+	}
+
+	.theme-button {
+		background-color: #333;
+		color: white;
+	}
+
+	.button-pair span {
+		margin-top: 0.5em;
+		font-weight: bold;
+		font-size: 1.2rem;
+	}
+</style>
+
+</style>
+
+<template id="themed-button-template">
+    <button class="btn theme-button"></button>
+</template>
+<!-- Declarations, globals, function defs -->
+<script>
+    function createButton({ id, text, classList = [], onClick}) {
+        const template = document.getElementById("themed-button-template");
+        const clone = template.content.cloneNode(true);
+        const button = clone.querySelector("button");
+    
+        button.id = id;
+        button.textContent = text;
+        classList.forEach(cls => button.classList.add(cls));
+        
+        if (typeof onClick === "function") {
+            button.addEventListener("click", onClick);
+        }
+
+        return button;
+    }
+
+    function createTextResult({ id, text = "-" }) {
+        const span = document.createElement("span");
+        span.id = id;
+        span.textContent = text;
+        return span;
+    }
+
+    function randomNumber(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+</script>
+
 <body>
     <header>
-        <!-- <h1>Ker Nathalas Companion App</h1> -->
-         <h1>Hello, world!</h1>
+        <h1>Ker Nathalas Companion App</h1>
     </header>
-    <!-- <main>
-        <section id="diceroller">
-            <h2>Random Number Roller</h2>
-            <button id="roll-btn">Roll the Dice</button>
-            <p>Result: <span id="result">-</span></p>
-        </section>
-    </main>
-
     <script>
-        // Get the button and result elements by their IDs
-        const button = document.getElementById('roll-btn');
-        const result = document.getElementById('result');
+        const container = document.createElement("div");
+        container.id = "button-container";
+        document.body.appendChild(container);
 
-        // Add a click event listener to the button
-        button.addEventListener('click', function() {
-            // Generate a random number from 1 to 6
-            const randomNumber = Math.floor(Math.random() * 6) + 1;
+        // Helper function to make a button + result pair
+        function createButtonPair({ id, text, range }) {
+            const pairWrapper = document.createElement("div");
+            pairWrapper.classList.add("button-pair");
 
-            // Display the random number
-            result.textContent = randomNumber;
+            const button = createButton({
+                id,
+                text,
+                classList: ["btn", "theme-button"],
+                onClick: () => {
+                    const result = document.getElementById(`${id}-result`);
+                    result.textContent = randomNumber(...range);
+                }
+            });
+            const result = createTextResult({
+                id: `${id}-result`,
+                text: "-"
+            });
+
+            pairWrapper.appendChild(button);
+            pairWrapper.appendChild(result);
+            container.appendChild(pairWrapper);
+        }
+
+        createButtonPair({ id: "btn-1", text: "Roll the Dice", range: [1, 6] });
+        createButtonPair({ id: "btn-2", text: "Another Button", range: [1, 100] });
+    </script>
+
+
+    <!-- <script>
+        const container = document.createElement("div");
+        container.id = "button-container";
+        document.body.appendChild(container);
+
+        const btn_1 = createButton({
+            id: "btn-1",
+            text: "Roll the Dice",
+            classList: ["btn", "theme-button"],
+            onClick: () => {
+                const result = document.getElementById('btn-1-result');
+                const randomNumberResult = randomNumber(1, 6);
+                result.textContent = randomNumberResult;
+            }
         });
+        container.appendChild(btn_1);
+
+        const btn_1_result = createTextResult({
+            id: "btn-1-result",
+            text: "-"
+        });
+        container.appendChild(btn_1_result);
+
+        const btn_2 = createButton({
+            id: "btn-2",
+            text: "Another Button",
+            classList: ["btn", "theme-button"],
+            onClick: () => {
+                const result = document.getElementById('btn-2-result');
+                const randomNumberResult = randomNumber(1, 100);
+                result.textContent = randomNumberResult;
+            }
+        });
+        container.appendChild(btn_2);
+
+        const btn_2_result = createTextResult({
+            id: "btn-2-result",
+            text: "-"
+        });
+        container.appendChild(btn_2_result);
     </script> -->
 </html>
