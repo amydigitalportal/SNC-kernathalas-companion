@@ -7,9 +7,52 @@
 </head>
 
 <style>
+    body {
+        background-image: url('assets/wallpaper.png');
+        color: white;
+    }
+
+    .txt-shadow {
+        text-shadow: 
+            2px    2px    2px   rgba(0, 0, 0, 0.75),
+            2px    0px    25px  rgba(0, 0, 0, 0.8), 
+            0px   -2px    5px   rgba(0, 0, 128, 0.85);
+    }
+
+    .hero {
+        text-align: center;
+        padding: 2rem;
+        /* background-color: #f0f0f0; */
+        border-radius: 8px;
+        margin: 1rem auto;
+        max-width: 600px;
+    }
+    
+    .hero div {
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    #hero-logo {
+        width: 70%;
+        height: auto;
+        display: block;
+        margin: 0 auto;
+    }
+
+    .instructions-tip {
+        font-size: 1.2rem;
+        margin: 1rem 0;
+        text-align: center;
+    }
+
 	#button-container {
 		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        
+        /* max-width: 400px;*/
+        margin: 0 auto; 
+		/* grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); */
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
 		gap: 1rem;
 		padding: 1rem;
 	}
@@ -39,12 +82,12 @@
 		background-color: #333;
 		color: white;
 	}
-
-	.button-pair span {
-		margin-top: 0.5em;
-		font-weight: bold;
-		font-size: 1.2rem;
-	}
+    
+    .button-pair .text {
+        margin-top: 0.5rem;
+        font-size: 1.2rem;
+        color: #333;
+    }
 </style>
 
 </style>
@@ -70,10 +113,13 @@
         return button;
     }
 
-    function createTextResult({ id, text = "-" }) {
+    function createTextResult({ id, text = "-", classList = [] }) {
         const span = document.createElement("span");
+
         span.id = id;
         span.textContent = text;
+        classList.forEach(cls => span.classList.add(cls));
+        
         return span;
     }
 
@@ -84,41 +130,56 @@
 
 <body>
     <header>
-        <h1>Ker Nathalas Companion App</h1>
+
     </header>
-    <script>
-        const container = document.createElement("div");
-        container.id = "button-container";
-        document.body.appendChild(container);
+    <main>
+        <!-- <h1>SNC Ker Nathalas Companion App</h1> -->
+        <div class="hero txt-shadow">
+            <div style="font-size: 18px;">Squeak N Coozy's</div>
+            <img id="hero-logo" src="assets/kn-logo-borderized.png" alt="SNC Ker Nathalas Logo">
+            <div style="font-size: 36px;">Companion App</div>
+        </div>
+        
 
-        // Helper function to make a button + result pair
-        function createButtonPair({ id, text, range }) {
-            const pairWrapper = document.createElement("div");
-            pairWrapper.classList.add("button-pair");
+        <div class="txt-shadow">
+            <p class="instructions-tip">Use the buttons below to roll dice or perform other actions.</p>
+        </div>
 
-            const button = createButton({
-                id,
-                text,
-                classList: ["btn", "theme-button"],
-                onClick: () => {
-                    const result = document.getElementById(`${id}-result`);
-                    result.textContent = randomNumber(...range);
-                }
-            });
-            const result = createTextResult({
-                id: `${id}-result`,
-                text: "-"
-            });
+        <script>
+            const container = document.createElement("div");
+            container.id = "button-container";
+            document.body.appendChild(container);
 
-            pairWrapper.appendChild(button);
-            pairWrapper.appendChild(result);
-            container.appendChild(pairWrapper);
-        }
+            // Helper function to make a button + result pair
+            function createButtonPair({ id, text, range }) {
+                const pairWrapper = document.createElement("div");
+                pairWrapper.classList.add("button-pair");
 
-        createButtonPair({ id: "btn-1", text: "Roll the Dice", range: [1, 6] });
-        createButtonPair({ id: "btn-2", text: "Another Button", range: [1, 100] });
-    </script>
+                const button = createButton({
+                    id,
+                    text,
+                    classList: ["btn", "theme-button"],
+                    onClick: () => {
+                        const result = document.getElementById(`${id}-result`);
+                        result.textContent = randomNumber(...range);
+                    }
+                });
+                const result = createTextResult({
+                    id: `${id}-result`,
+                    text: "-",
+                    classList: ["text", "result-text"]
+                });
 
+                pairWrapper.appendChild(button);
+                pairWrapper.appendChild(result);
+                container.appendChild(pairWrapper);
+            }
+
+            createButtonPair({ id: "btn-1", text: "Roll the Dice", range: [1, 6] });
+            createButtonPair({ id: "btn-2", text: "Another Button", range: [1, 100] });
+        </script>
+
+    </main>
 
     <!-- <script>
         const container = document.createElement("div");
