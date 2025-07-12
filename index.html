@@ -355,6 +355,98 @@ const EVENTS = {
 	100: "A necrolord grabs your head. Make a Resolve check: on success, gain 100 XP. On failure, roll on the Madness table."
 };
 
+const MONSTERS = {
+	"Abyssal Vexator": { page: 122 },
+	"Amalgam": { page: 123 },
+	"Armor Construct": { page: 124 },
+	"Astral Beast": { page: 125 },
+	"Bladewings": { page: 126 },
+	"Blood Stalker": { page: 127 },
+	"Blightfang Rats": { page: 128 },
+	"Bone Golem": { page: 129 },
+	"Bone Spiders": { page: 130 },
+	"Cavebound Leech": { page: 131 },
+	"Corpse Ants": { page: 132 },
+	"Death Sage": { page: 133 },
+	"Desiccated Cryptguards": { page: 134 },
+	"Dwerax": { page: 135 },
+	"Fangvine": { page: 136 },
+	"Flayed Knight": { page: 137 },
+	"Flesh Eater": { page: 138 },
+	"Fleshmelt Slime": { page: 139 },
+	"Giant Spider": { page: 140 },
+	"Hive Larvae": { page: 141 },
+	"Hive Warrior": { page: 142 },
+	"Hollow Shambler": { page: 143 },
+	"Living Moss": { page: 144 },
+	"Necropede": { page: 145 },
+	"Netherfiend": { page: 146 },
+	"Plaguebringer": { page: 147 },
+	"Pyreborn": { page: 148 },
+	"Ratkin Marauders": { page: 149 },
+	"Razorjaw": { page: 150 },
+	"Reanimated Homunculus": { page: 151 },
+	"Rotwalkers": { page: 152 },
+	"Skeletal Horrors": { page: 153 },
+	"Stone Warden": { page: 154 },
+	"Swarmer": { page: 155 },
+	"Tomb Crawler": { page: 156 },
+	"Umbra Fiend": { page: 157 },
+	"Unfettered Familiar": { page: 158 },
+	"Vaelorian Magus": { page: 159 },
+	"Vinekin": { page: 160 },
+	"Voidweaver": { page: 161 },
+	"Vorleg": { page: 162 },
+	"Wraithskull": { page: 163 },
+	"Wrath Elemental": { page: 164 }
+};
+
+const MONSTER_TABLES = Object.freeze({
+	A: Object.freeze({
+		1: "Abyssal Vexator",
+		2: "Amalgam",
+		3: "Armor Construct",
+		4: "Astral Beast",
+		5: "Bladewings",
+		6: "Blood Stalker",
+		7: "Bone Golem",
+		8: "Bone Spiders",
+		9: "Cavebound Leech",
+		10: "Corpse Ants",
+		11: "Death Sage",
+		12: "Desiccated Cryptguards",
+		13: "Dwerax",
+		14: "Fangvine",
+		15: "Flayed Knight",
+		16: "Fleshmelt Slime",
+		17: "Giant Spider",
+		18: "Hive Larvae",
+		19: "Hive Warrior",
+		20: "Hollow Shambler"
+	}),
+	B: Object.freeze({
+		1: "Living Moss",
+		2: "Necropede",
+		3: "Netherfiend",
+		4: "Plaguebringer",
+		5: "Pyreborn",
+		6: "Ratkin Marauders",
+		7: "Razorjaw",
+		8: "Reanimated Homunculus",
+		9: "Rotwalkers",
+		10: "Stone Warden",
+		11: "Swarmer",
+		12: "Tomb Crawler",
+		13: "Umbra Fiend",
+		14: "Unfettered Familiar",
+		15: "Vaelorian Magus",
+		16: "Vinekin",
+		17: "Voidweaver",
+		18: "Vorleg",
+		19: "Wraithskull",
+		20: "Wrath Elemental"
+	})
+});
 
 
 function createButton({ id, text, classList = [], onClick }) {
@@ -468,53 +560,6 @@ function showElement(element) {
         <!-- <p class="instructions-tip txt-shadow">Use the buttons below to roll dice or perform other actions.</p> -->
 
 <script>
-// Monster Tables A or B (D20)
-const MONSTER_TABLES = Object.freeze({
-	A: Object.freeze({
-		1: "Abyssal Vexator",
-		2: "Amalgam",
-		3: "Armor Construct",
-		4: "Astral Beast",
-		5: "Bladewings",
-		6: "Blood Stalker",
-		7: "Bone Golem",
-		8: "Bone Spiders",
-		9: "Cavebound Leech",
-		10: "Corpse Ants",
-		11: "Death Sage",
-		12: "Desiccated Cryptguards",
-		13: "Dwerax",
-		14: "Fangvine",
-		15: "Flayed Knight",
-		16: "Fleshmelt Slime",
-		17: "Giant Spider",
-		18: "Hive Larvae",
-		19: "Hive Warrior",
-		20: "Hollow Shambler"
-	}),
-	B: Object.freeze({
-		1: "Living Moss",
-		2: "Necropede",
-		3: "Netherfiend",
-		4: "Plaguebringer",
-		5: "Pyreborn",
-		6: "Ratkin Marauders",
-		7: "Razorjaw",
-		8: "Reanimated Homunculus",
-		9: "Rotwalkers",
-		10: "Stone Warden",
-		11: "Swarmer",
-		12: "Tomb Crawler",
-		13: "Umbra Fiend",
-		14: "Unfettered Familiar",
-		15: "Vaelorian Magus",
-		16: "Vinekin",
-		17: "Voidweaver",
-		18: "Vorleg",
-		19: "Wraithskull",
-		20: "Wrath Elemental"
-	})
-});
 var monsterTableResult = '';
 
 window.onload = () => {
@@ -618,9 +663,9 @@ window.onload = () => {
 			result.textContent = roll;
 
             const table = MONSTER_TABLES[monsterTableResult];
-            const monster = table[roll] || "ERROR - INVALID ENTRY";
+            const monster = table[roll] || "ERROR - INVALID ENTRY FROM MONSTER_TABLES";
 
-			flavor.textContent = monster;
+			flavor.textContent = `${monster} (p. ${121 + roll})`;
             showElement(flavor); // Show flavor text
 		}
 	});
@@ -641,7 +686,7 @@ window.onload = () => {
                         (roll >= 21 && roll <= 30) ? 21 :
                         roll;
 
-            flavor.textContent = EVENTS[event] || "PLACEHOLDER EVENT DESCRIPTION";
+            flavor.textContent = EVENTS[event] || "ERROR - INVALID ENTRY FROM EVENTS";
             showElement(flavor); // Show flavor text
 		}
 	});
