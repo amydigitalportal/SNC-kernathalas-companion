@@ -4,12 +4,19 @@
     <meta charset="UTF-8">
     <title>SNC Ker Nathalas Companion App</title>
     <link rel="stylesheet" href="styles.css">
-</head>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@100..900&family=Jacquard+24&family=Jim+Nightshade&family=Kings&family=Manufacturing+Consent&family=My+Soul&family=New+Rocker&family=Pirata+One&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
 <style>
     body {
         background-image: url('assets/wallpaper.png');
         color: white;
+        font-family: "Manufacturing Consent", system-ui;
+    }
+
+    main {
+        padding-top: 1rem;
     }
 
     .txt-shadow {
@@ -21,7 +28,7 @@
 
     .hero {
         text-align: center;
-        padding: 2rem;
+        padding: 1.25rem;
         /* background-color: #f0f0f0; */
         border-radius: 8px;
         margin: 0 auto;
@@ -30,7 +37,6 @@
     
     .hero div {
         font-size: 1.5rem;
-        font-weight: bold;
     }
 
     #hero-logo {
@@ -41,9 +47,11 @@
     }
 
     .instructions-tip {
-        font-size: 1.2rem;
         margin: 0 0;
         text-align: center;
+
+        font-family: "Pirata One", system-ui;
+        font-size: 1.2rem;
     }
 
     #button-container {
@@ -51,7 +59,6 @@
         flex-direction: column;
         align-items: center;
         text-align: center;
-        padding: 1rem;
         width: 80%;
         margin: 0 auto;
         gap: 1rem;
@@ -59,7 +66,7 @@
 
     #button-container > div > * {
         display: block;
-        width: 100%;
+        /* width: 100%; */
     }
 
     .hidden {
@@ -71,7 +78,7 @@
         flex-direction: column;
         align-items: center;
         padding: 1rem;
-        gap: 0.5rem;
+        gap: 1rem;
 
         width: 80%;            /* 👈 set the width */
         margin: 0 auto;         /* 👈 center horizontally */
@@ -82,20 +89,62 @@
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
     }
 
-	.btn {
-		padding: 0.5em 1em;
-		font-size: 1rem;
+	.theme-button {
+		/* background-color: #333;
+		color: white; */
+        background: linear-gradient(#3a2f1c, #1e1a14); /* dark brown to almost black */
+		color: #e0d7c3; /* parchment-like font color */
+		border: 2px solid #5c4c33;
 		border-radius: 4px;
-		border: none;
+        font-family: "Grenze Gotisch", system-ui;
+		font-size: 1rem;
+		letter-spacing: 1px;
+        
+		padding: 0.6em 1.2em;
+		box-shadow: inset 0 0 4px #00000088, 0 2px 4px #00000066;
 		cursor: pointer;
-		background-color: #007bff;
-		color: white;
+		transition: all 0.1s ease-in-out;
+	}
+    .theme-button:hover {
+		background: linear-gradient(#4a3b28, #2b231a);
+		color: #fffbe0;
+		transform: translateY(-1px);
+		box-shadow: inset 0 0 6px #000000aa, 0 4px 8px #00000088;
 	}
 
-	.theme-button {
-		background-color: #333;
-		color: white;
+	.theme-button:active {
+		transform: translateY(0px);
+		box-shadow: inset 2px 2px 6px #000000aa;
 	}
+
+    .result-text {
+        font-size: 1.5rem;
+        font-family: "New Rocker", system-ui;
+        /* Dark blood color for results */
+        color: rgba(192, 0, 0, 0.8);
+    }
+
+    .flavor-text {
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 4px;
+        padding: 1rem 2rem;
+
+        /* background-color: rgba(216, 197, 150, 0.6); */
+        background-image: url('assets/kn-parchment.png');
+        background-color: rgba(255,255,255,0.5);
+        background-blend-mode: luminosity;
+        
+        color: black;
+        font-size: 2rem;
+        font-family: "Jim Nightshade", cursive;
+        font-weight: 400;
+        text-shadow: #4604048a 1px 1px 2px;
+        /* font-style: italic; */
+
+        width: 100%;
+        box-sizing: border-box;    /* 👈 prevents overflow due to padding */
+    }
+
 </style>
 
 <template id="themed-button-template">
@@ -269,6 +318,7 @@ function createButtonGroup({ id, text, range, onClick }) {
 		text: "",
 		classList: ["text", "flavor-text"]
 	});
+    hideElement(flavorSpan); // Hide flavor text initially
 
 	const button = createButton({
 		id: `${id}-btn`,
@@ -291,7 +341,10 @@ function resetButtonGroup(id) {
 	const resultEl = document.getElementById(`${id}-result`);
 	const flavorEl = document.getElementById(`${id}-flavor`);
 	if (resultEl) resultEl.textContent = "-";
-	if (flavorEl) flavorEl.textContent = "";
+	if (flavorEl) {
+        flavorEl.textContent = "";
+        flavorEl.classList.add("hidden"); // Hide flavor text when resetting
+    }
 }
 
 function showGroup(id) {
@@ -310,6 +363,18 @@ function hideGroup(id) {
 function resetAllGroups(groupIds) {
 	groupIds.forEach(hideGroup); // hides and resets
 }
+
+function hideElement(element) {
+    if (element) {
+        element.classList.add("hidden");
+    }
+}
+
+function showElement(element) {
+    if (element) {
+        element.classList.remove("hidden");
+    }
+}
 </script>
 
 <body>
@@ -318,27 +383,20 @@ function resetAllGroups(groupIds) {
     </header>
     <main>
         <div class="hero txt-shadow">
-            <div style="font-size: 18px;">Squeak N Coozy's</div>
+            <div style="font-size: 1.5rem;">Squeak N Coozy's</div>
             <img id="hero-logo" src="assets/kn-logo-borderized.png" alt="SNC Ker Nathalas Logo">
-            <div style="font-size: 36px;">Companion App</div>
+            <div style="font-size: 2rem;">Companion App</div>
         </div>
         
-
-        <div class="txt-shadow">
-            <p class="instructions-tip">Use the buttons below to roll dice or perform other actions.</p>
-        </div>
+        <!-- <p class="instructions-tip txt-shadow">Use the buttons below to roll dice or perform other actions.</p> -->
 
 <script>
-
-
 window.onload = () => {
 	const container = document.createElement("div");
 	container.id = "button-container";
 	document.body.appendChild(container);
 
 	const phaseGroups = [
-		"corr-desc-group",
-		"room-desc-group",
 		"encounter-group",
 		"monster-table-group",
 		"monster-select-group",
@@ -353,49 +411,25 @@ window.onload = () => {
 		onClick: (result, flavor) => {
 			const roll = randomNumber(1, 100);
 			const isRoom = roll > 25;
-			result.textContent = `${isRoom ? "ROOM" : "CORRIDOR"} (${roll})`;
-			flavor.textContent = isRoom ? "Boon or Doom?" : "This is a spooky corridor.";
+			result.textContent = `${isRoom ? "Room" : "Corridor"} # ${roll}`;
 
-			// Hide and reset all downstream groups
+			// Pull description directly
+			flavor.textContent = isRoom
+				? ROOM_DESCRIPTIONS[roll] || "A silent and empty room."
+				: CORRIDOR_DESCRIPTIONS[Math.ceil((roll / 25) * 20)] || "The corridor is eerily quiet.";
+            showElement(flavor); // Show flavor text
+
+			// Reset and proceed
 			resetAllGroups(phaseGroups);
 
 			if (isRoom) {
-				showGroup("room-desc-group");
 				showGroup("encounter-group");
-			} else {
-				showGroup("corr-desc-group");
 			}
 		}
 	});
-	container.appendChild(explorationGroup);
-
-	// Phase 2a: Corridor Description
-	const corrDescGroup = createButtonGroup({
-		id: "corr-desc-group",
-		text: "Corridor Description (d20)",
-		range: [1, 20],
-		onClick: (result, flavor) => {
-			const roll = randomNumber(1, 20);
-			result.textContent = `# ${roll}`;
-			flavor.textContent = CORRIDOR_DESCRIPTIONS[roll] || "The corridor is eerily quiet.";
-		}
-	});
-	corrDescGroup.classList.add("hidden");
-	container.appendChild(corrDescGroup);
-
-	// Phase 2b: Room Description
-	const roomDescGroup = createButtonGroup({
-		id: "room-desc-group",
-		text: "Room Description (d100)",
-		range: [1, 100],
-		onClick: (result, flavor) => {
-			const roll = randomNumber(1, 100);
-			result.textContent = `# ${roll}`;
-			flavor.textContent = ROOM_DESCRIPTIONS[roll] || "A silent and empty room.";
-		}
-	});
-	roomDescGroup.classList.add("hidden");
-	container.appendChild(roomDescGroup);
+    // document.getElementById("exploration-group-flavor").classList.add("hidden"); // Hide flavor text initially
+	// hideElement(document.getElementById("exploration-group-flavor"));
+    container.appendChild(explorationGroup);
 
 	// Phase 3: Encounter
 	const encounterGroup = createButtonGroup({
@@ -462,6 +496,7 @@ window.onload = () => {
 	container.appendChild(eventGroup);
 };
 </script>
+
 
 
 </html>
