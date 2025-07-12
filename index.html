@@ -553,8 +553,6 @@ window.onload = () => {
 			}
 		}
 	});
-    // document.getElementById("exploration-group-flavor").classList.add("hidden"); // Hide flavor text initially
-	// hideElement(document.getElementById("exploration-group-flavor"));
     container.appendChild(explorationGroup);
 
 	// Phase 3: Encounter
@@ -566,9 +564,13 @@ window.onload = () => {
 			const roll = randomNumber(1, 20);
 			result.textContent = `${roll}`;
 			if (roll >= 15) {
+                resetButtonGroup("monster-table-group"); // Reset monster table group
+                resetButtonGroup("monster-select-group"); // Reset monster select group
 				showGroup("monster-table-group");
 				hideGroup("event-group");
+                hideGroup("monster-select-group");
 			} else {
+                resetButtonGroup("event-group"); // Reset event group
 				showGroup("event-group");
 				hideGroup("monster-table-group");
 				hideGroup("monster-select-group");
@@ -586,7 +588,20 @@ window.onload = () => {
 		onClick: (result, flavor) => {
 			const roll = randomNumber(1, 6);
 			result.textContent = roll;
-			flavor.textContent = roll <= 3 ? "Use Table A" : "Use Table B";
+			flavor.textContent = roll <= 3 ? "Table A" : "Table B";
+            
+            monsterTableResult = roll <= 3 ? "A" : "B"; // Store the selected table
+            const monsterSelectGroup = document.getElementById("monster-select-group");
+            if (monsterSelectGroup) {
+                const monsterButton = document.getElementById("monster-select-group-btn");
+                if (monsterButton) {
+                    monsterButton.textContent = `Monster (Table ${monsterTableResult} - d20)`;
+                    resetButtonGroup("monster-select-group"); // Reset the monster select group
+                }
+            }
+
+            showElement(flavor); // Show flavor text
+
 			showGroup("monster-select-group");
 		}
 	});
@@ -600,8 +615,13 @@ window.onload = () => {
 		range: [1, 20],
 		onClick: (result, flavor) => {
 			const roll = randomNumber(1, 20);
-			result.textContent = `PLACEHOLDER MONSTER DESCRIPTION (${roll})`;
-			flavor.textContent = "";
+			result.textContent = roll;
+
+            const table = MONSTER_TABLES[monsterTableResult];
+            const monster = table[roll] || "ERROR - INVALID ENTRY";
+
+			flavor.textContent = monster;
+            showElement(flavor); // Show flavor text
 		}
 	});
 	monsterSelectGroup.classList.add("hidden");
@@ -614,8 +634,15 @@ window.onload = () => {
 		range: [1, 100],
 		onClick: (result, flavor) => {
 			const roll = randomNumber(1, 100);
-			result.textContent = `PLACEHOLDER EVENT DESCRIPTION (${roll})`;
-			flavor.textContent = "";
+			result.textContent = roll;
+
+            const event = (roll >= 1 && roll <= 10) ? 1 :
+                        (roll >= 11 && roll <= 20) ? 11 :
+                        (roll >= 21 && roll <= 30) ? 21 :
+                        roll;
+
+            flavor.textContent = EVENTS[event] || "PLACEHOLDER EVENT DESCRIPTION";
+            showElement(flavor); // Show flavor text
 		}
 	});
 	eventGroup.classList.add("hidden");
