@@ -10,8 +10,8 @@
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@100..900&family=Jacquard+24&family=Jim+Nightshade&family=Kings&family=Manufacturing+Consent&family=My+Soul&family=New+Rocker&family=Pirata+One&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
-
+    <link href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@100..900&family=Inconsolata:wght@200..900&family=Jacquard+24&family=Jim+Nightshade&family=Kings&family=Manufacturing+Consent&family=My+Soul&family=New+Rocker&family=Pirata+One&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
+    
     <!-- General Styles -->
     <style>
         .hidden {
@@ -191,8 +191,9 @@
             width: 80%;            /* 👈 set the width */
             margin: 0 auto;         /* 👈 center horizontally */
 
-            background: rgba(0, 0, 0, 0.8);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            /* background: rgba(0, 0, 0, 0.8); */
+            background: rgba(34, 34, 34, 0.95);
+            border: 1px solid #555;
             border-radius: 8px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
         }
@@ -494,6 +495,7 @@
 
 .combat-panel hr {
     margin: 1rem 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 #combat-players-panel {
@@ -505,6 +507,10 @@
 
 #combat-players-panel h2, h3 {
     line-height: 0;
+}
+
+#combat-players-panel .theme-button {
+    padding: 0.5rem .5rem;
 }
 
 /* #reset-players-button {
@@ -524,7 +530,7 @@
     min-height: 100px;
 	max-height: 200px;       /* 👈 limit height */
 	overflow-y: auto;        /* 👈 enable vertical scroll */
-    font-family: monospace;
+    font-family: "Inconsolata", monospace;
 }
 
 .log-box ol {
@@ -633,12 +639,6 @@
                     </div>
                 </div>
                 <div id="mechanism-report-details" class="report-details-wrapper button-group hidden">
-                    <!-- Here we need a chart to follow the message -->
-                    <!-- Includes heading "Difficulty" -->
-                    <!-- Columns flex -->
-                    <!-- If not trapped, show only the lock column -->
-                    <!-- If trapped, show both the lock column and trap column -->
-                    <!-- Both columns display 1) LOCK/TRAP subheading, 2) difficulty + modifier (eg. Child's Play +30) -->
                     <h3 class="report-heading">Difficulty</h3>
                     <div id="difficulty-columns" class="difficulty-columns">
                         <!-- JS will populate lock/trap columns here -->
@@ -657,10 +657,15 @@
                             <div id="combat-players-panel">
                                 <h3>Players</h3>
                                 <div class="button-row">  
-                                    <button id="subtract-player-button">-</button>
-                                    <button id="add-player-button">+</button>
+                                    <button id="subtract-player-button" class="theme-button">
+                                        <span class="material-symbols-outlined">remove</span>
+                                    </button>
+                                    <button id="add-player-button"class="theme-button">
+                                        <span class="material-symbols-outlined">add</span>
+                                        
+                                    </button>
                                 </div>
-                                <button id="reset-players-button">Reset</button>
+                                <button id="reset-players-button" class="theme-button" style="padding: 0 1rem; height: 2rem;">Reset</button>
                                 <div class="player-count-wrapper">
                                     <!-- <span class="player-count-label">Players: </span>
                                     <span id="player-count-span">1</span> -->
@@ -673,7 +678,7 @@
                             <hr>
 
                             <div class="generate-activity-button-container">
-                                <button id="generate-activity-button">Generate Monster Action</button>
+                                <button id="generate-activity-button" class="theme-button">Generate Monster Action</button>
                             </div>
 
                             <div id="monster-log" class="log-box">
@@ -1665,10 +1670,10 @@ const ViewModes = {
 	COMBAT: "COMBAT",
 };
 
-// let currentViewMode = ViewModes.HOME; // default state is HOME
+let currentViewMode = ViewModes.HOME; // default state is HOME
 // let currentViewMode = ViewModes.EXPLORATION; 
 // let currentViewMode = ViewModes.MECHANISMS; 
-let currentViewMode = ViewModes.COMBAT;
+// let currentViewMode = ViewModes.COMBAT;
 
 function initViewModeButtons() {
 	const buttons = document.querySelectorAll('.viewmode-button');
