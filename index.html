@@ -470,6 +470,83 @@
         font-size: 1.2rem;
     }
     </style>
+
+
+    <!-- Combat Page Styles  -->
+    <style>
+.combat-content-container {
+    width: 100%;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+}
+        
+.combat-panel {
+    padding: 1rem;
+    background: #222;
+    color: #eee;
+    border: 1px solid #555;
+    border-radius: 8px;
+    width: 400px;
+    font-weight: 400;
+    font-family: "New Rocker", system-ui;
+}
+
+.combat-panel hr {
+    margin: 1rem 0;
+}
+
+#combat-players-panel {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+#combat-players-panel h2, h3 {
+    line-height: 0;
+}
+
+/* #reset-players-button {
+    margin-top: 1rem;
+} */
+
+.generate-activity-button-container {
+    padding: 1rem 0;
+    margin: 1rem auto;
+    width: 100%;
+}
+
+.log-box {
+    padding: 0.5rem;
+    background: #111;
+    border: 1px solid #444;
+    min-height: 100px;
+    white-space: pre-line;
+    font-family: monospace;
+}
+
+.log-box ol {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;   /* 👈 centers list items horizontally */
+    justify-content: flex-start;  /* 👈 aligns items to top */
+}
+
+.log-box ol li {
+    margin-bottom: 0.5rem;   /* 👈 spacing between list items */
+    text-align: center;      /* optional: center text inside li */
+}
+
+
+.player-count-wrapper {
+    padding: 1rem;
+}
+    </style>
 </head>
 
 <template id="themed-button-template">
@@ -569,9 +646,41 @@
 
             <div class="combat-page hidden">
                 <div class="combat-header page-title txt-shadow">
-                    <h1>Combat Phase</h1>
-                    <h3>w.i.p.</h3>
+                    <h1>Combat Phase</h1>                    
                     <!-- <p>Engage in battles against the dungeon's denizens.</p> -->
+                    <div class="combat-content-container">
+
+                        <div class="combat-panel">
+                            <h2>Combat Manager</h2>
+                            <div id="combat-players-panel">
+                                <h3>Players</h3>
+                                <div class="button-row">  
+                                    <button id="subtract-player-button">-</button>
+                                    <button id="add-player-button">+</button>
+                                </div>
+                                <button id="reset-players-button">Reset</button>
+                                <div class="player-count-wrapper">
+                                    <!-- <span class="player-count-label">Players: </span>
+                                    <span id="player-count-span">1</span> -->
+                                    <div id="player-count-tracker" class="player-count-label">
+                                        <span class="material-symbols-outlined">chess_pawn</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="generate-activity-button-container">
+                                <button id="generate-activity-button">Generate Monster Action</button>
+                            </div>
+
+                            <div id="monster-log" class="log-box">
+                                <span id="monster-log-placeholder-text">(No activities yet)</span>
+                                <ol id="monster-log-activity-list" class="hidden"></ol>
+                            </div>
+
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1372,13 +1481,174 @@ function logMechanismReport(mechanism, lockRoll, isLocked, trapRoll, isTrapped, 
 
 </script>
 
+
+
 <!-- Combat Page Scripts -->
 <script>
+
+const CombatManager = (() => {
+	let numPlayers = 1;
+	const MAX_PLAYERS = 10;
+	const MIN_PLAYERS = 1;
+	let monsterActivities = [];
+
+	function addPlayer() {
+		if (numPlayers < MAX_PLAYERS) numPlayers++;
+	}
+
+	function subtractPlayer() {
+		if (numPlayers > MIN_PLAYERS) numPlayers--;
+	}
+
+	function resetPlayers() {
+		numPlayers = 1;
+	}
+
+	function rollTarget() {
+		return randomNumber(1, numPlayers);
+	}
+
+	function rollAction() {
+		return randomNumber(1, 6);
+	}
+
+	function rollCombatCheck() {
+		return randomNumber(1, 100);
+	}
+
+	function generateMonsterActivity() {
+        let date = new Date();
+        let time = date.toLocaleString([], {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit",
+        });
+
+		return {
+            timestamp: time,
+			target: rollTarget(),
+			action: rollAction(),
+			combatCheck: rollCombatCheck()
+		};
+	}
+
+	function appendMonsterActivity() {
+		const activity = generateMonsterActivity();
+		monsterActivities.push(activity);
+		return activity;
+	}
+
+	function getMonsterActivityList() {
+		return monsterActivities;
+	}
+
+    function getMonsterActivityListFormatted() {
+      return monsterActivities.map((act, i) =>
+			`[${i + 1}] Target: [${act.target}] → Action [${act.action}] → Check [${act.combatCheck}]`
+		).join("\n");
+    }
+  
+	function displayMonsterActivityList() {
+      const formatted = getMonsterActivityListFormatted();
+      console.log(formatted);
+	}
+
+	// Expose methods for use
+	return {
+        getNumPlayers: () => numPlayers,
+		addPlayer,
+		subtractPlayer,
+		resetPlayers,
+		rollTarget,
+		rollAction,
+		rollCombatCheck,
+		generateMonsterActivity,
+		appendMonsterActivity,
+		getMonsterActivityList,
+        getMonsterActivityListFormatted,
+		displayMonsterActivityList
+	};
+})();
+
+
 function initCombatPage() {
     // Initialize any specific functionality for the Combat page here
     console.log("Combat page initialized.");
+
+    const addBtn = document.getElementById("add-player-button");
+    const subBtn = document.getElementById("subtract-player-button");
+    const resetBtn = document.getElementById("reset-players-button");
+    const genActivityBtn = document.getElementById("generate-activity-button");
+    // const playerCountSpan = document.getElementById("player-count-span");
+    const playerCountTracker = document.getElementById("player-count-tracker");
+    const logBox = document.getElementById("monster-log");
+    const placeholderTextSpan = document.getElementById("monster-log-placeholder-text");
+    const activityListEl = document.getElementById("monster-log-activity-list");
+
+    function updatePlayerCountDisplay() {
+	    const tracker = playerCountTracker;
+        const numPlayers = CombatManager.getNumPlayers();
+        
+        // Clear existing icons
+        tracker.innerHTML = "";
+
+        // Add one icon per player
+        for (let i = 0; i < numPlayers; i++) {
+            const icon = document.createElement("span");
+            icon.classList.add("material-symbols-outlined");
+            icon.textContent = "chess_pawn"; // or any other icon name
+            tracker.appendChild(icon);
+        }
+    }
+
+    function updateLogDisplay() {
+        const monsterActivities = CombatManager.getMonsterActivityList();
+    
+        // Clear existing list items
+        activityListEl.innerHTML = "";
+    
+        if (!monsterActivities || monsterActivities.length === 0) {
+            placeholderTextSpan.textContent = "(No activities yet)";
+            activityListEl.classList.add("hidden");
+        } else {
+            placeholderTextSpan.textContent = "";
+            activityListEl.classList.remove("hidden");
+    
+            monsterActivities.forEach((act, i) => {
+                const li = document.createElement("li");
+                li.textContent = `[${act.timestamp}] Target: [${act.target}] → Action [${act.action}] → Check: [${act.combatCheck}]`;
+                activityListEl.appendChild(li);
+            });
+        }
+    }
+
+    addBtn.addEventListener("click", () => {
+        CombatManager.addPlayer();
+        updatePlayerCountDisplay();
+    });
+
+    subBtn.addEventListener("click", () => {
+        CombatManager.subtractPlayer();
+        updatePlayerCountDisplay();
+    });
+
+    resetBtn.addEventListener("click", () => {
+        CombatManager.resetPlayers();
+        updatePlayerCountDisplay();
+    });
+
+    genActivityBtn.addEventListener("click", () => {
+        CombatManager.appendMonsterActivity();
+        updateLogDisplay();
+    });
+
+    // Init
+    updatePlayerCountDisplay();
+    updateLogDisplay();
 }
 </script>
+
+
 
 <!-- View-Mode Scripts -->
 <script>
@@ -1389,10 +1659,10 @@ const ViewModes = {
 	COMBAT: "COMBAT",
 };
 
-let currentViewMode = ViewModes.HOME; // default state is HOME
+// let currentViewMode = ViewModes.HOME; // default state is HOME
 // let currentViewMode = ViewModes.EXPLORATION; 
 // let currentViewMode = ViewModes.MECHANISMS; 
-// let currentViewMode = ViewModes.COMBAT;
+let currentViewMode = ViewModes.COMBAT;
 
 function initViewModeButtons() {
 	const buttons = document.querySelectorAll('.viewmode-button');
