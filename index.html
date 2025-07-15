@@ -14,6 +14,10 @@
 
     <!-- General Styles -->
     <style>
+        .hidden {
+            display: none !important;
+        }
+
         .vertical-seperator {
             display: inline-block;
             width: 1px;
@@ -175,10 +179,6 @@
         #button-container > div > * {
             display: block;
             /* width: 100%; */
-        }
-
-        .hidden {
-            display: none !important;
         }
 
         .button-group {
@@ -483,11 +483,11 @@
         
 .combat-panel {
     padding: 1rem;
-    background: #222;
+    background: rgba(34, 34, 34, 0.95);
     color: #eee;
     border: 1px solid #555;
     border-radius: 8px;
-    width: 400px;
+    width: 80%;
     font-weight: 400;
     font-family: "New Rocker", system-ui;
 }
@@ -522,7 +522,8 @@
     background: #111;
     border: 1px solid #444;
     min-height: 100px;
-    white-space: pre-line;
+	max-height: 200px;       /* 👈 limit height */
+	overflow-y: auto;        /* 👈 enable vertical scroll */
     font-family: monospace;
 }
 
@@ -533,13 +534,14 @@
 
     display: flex;
     flex-direction: column;
-    align-items: center;   /* 👈 centers list items horizontally */
-    justify-content: flex-start;  /* 👈 aligns items to top */
+    align-items: flex-start;   /* left-align items */
+    justify-content: flex-start; /* top-align items (default for column) */
+    
 }
 
 .log-box ol li {
     margin-bottom: 0.5rem;   /* 👈 spacing between list items */
-    text-align: center;      /* optional: center text inside li */
+    text-align: left;      /* optional: center text inside li */
 }
 
 
@@ -1547,11 +1549,6 @@ const CombatManager = (() => {
 			`[${i + 1}] Target: [${act.target}] → Action [${act.action}] → Check [${act.combatCheck}]`
 		).join("\n");
     }
-  
-	function displayMonsterActivityList() {
-      const formatted = getMonsterActivityListFormatted();
-      console.log(formatted);
-	}
 
 	// Expose methods for use
 	return {
@@ -1565,8 +1562,7 @@ const CombatManager = (() => {
 		generateMonsterActivity,
 		appendMonsterActivity,
 		getMonsterActivityList,
-        getMonsterActivityListFormatted,
-		displayMonsterActivityList
+        getMonsterActivityListFormatted
 	};
 })();
 
@@ -1604,14 +1600,19 @@ function initCombatPage() {
     function updateLogDisplay() {
         const monsterActivities = CombatManager.getMonsterActivityList();
     
+        // Track if the user is currently scrolled to the bottom
+        const isAtBottom =
+            logBox.scrollHeight - logBox.scrollTop <= logBox.clientHeight + 2;
+
         // Clear existing list items
         activityListEl.innerHTML = "";
     
         if (!monsterActivities || monsterActivities.length === 0) {
             placeholderTextSpan.textContent = "(No activities yet)";
+            showElement(placeholderTextSpan);
             activityListEl.classList.add("hidden");
         } else {
-            placeholderTextSpan.textContent = "";
+            hideElement(placeholderTextSpan);
             activityListEl.classList.remove("hidden");
     
             monsterActivities.forEach((act, i) => {
@@ -1619,6 +1620,11 @@ function initCombatPage() {
                 li.textContent = `[${act.timestamp}] Target: [${act.target}] → Action [${act.action}] → Check: [${act.combatCheck}]`;
                 activityListEl.appendChild(li);
             });
+        }
+        
+        // Scroll to bottom if we were already at the bottom before
+        if (isAtBottom) {
+            logBox.scrollTop = logBox.scrollHeight;
         }
     }
 
