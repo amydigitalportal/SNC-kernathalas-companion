@@ -5,191 +5,332 @@
     <title>SNC Ker Nathalas Companion App</title>
     <link rel="stylesheet" href="styles.css">
 
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&icon_names=home" />
+
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@100..900&family=Jacquard+24&family=Jim+Nightshade&family=Kings&family=Manufacturing+Consent&family=My+Soul&family=New+Rocker&family=Pirata+One&family=UnifrakturCook:wght@700&display=swap" rel="stylesheet">
-<style>
-    body {
-        background-image: url('assets/wallpaper.png');
-        color: white;
-        font-family: "Manufacturing Consent", system-ui;
-    }
 
-    main {
-        padding-top: 1rem;
-    }
+    <!-- General Styles -->
+    <style>
+        .vertical-seperator {
+            display: inline-block;
+            width: 1px;
+            min-height: 20px;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.25);
+        }
 
-    .txt-shadow {
-        text-shadow: 
-            2px    2px    2px   rgba(0, 0, 0, 0.75),
-            2px    0px    25px  rgba(0, 0, 0, 0.8), 
-            0px   -2px    5px   rgba(0, 0, 128, 0.85);
-    }
+        .material-home-outlined {
+            font-variation-settings:
+                'FILL' 0,
+                'wght' 400,
+                'GRAD' 0,
+                'opsz' 24
+        }
+    </style>
 
-    .hero {
-        text-align: center;
-        padding: 1.25rem;
-        /* background-color: #f0f0f0; */
-        border-radius: 8px;
-        margin: 0 auto;
-        max-width: 600px;
-    }
-    
-    .hero div {
-        font-size: 1.5rem;
-    }
+    <!-- Header Styles -->
+    <style>
+        header {
+            margin: 0;
+            height: 40px;
+            background-color: black;
+        }
 
-    #hero-logo {
-        width: 70%;
-        height: auto;
-        display: block;
-        margin: 0 auto;
-    }
-
-    .instructions-tip {
-        margin: 0 0;
-        text-align: center;
-
-        font-family: "Pirata One", system-ui;
-        font-size: 1.2rem;
-    }
-
-    #button-container {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        text-align: center;
-        width: 80%;
-        margin: 0 auto;
-        gap: 1rem;
-    }
-
-    #button-container > div > * {
-        display: block;
-        /* width: 100%; */
-    }
-
-    .hidden {
-        display: none !important;
-    }
-
-    .button-group {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: .5rem;
-        gap: 1rem;
-
-        width: 80%;            /* 👈 set the width */
-        margin: 0 auto;         /* 👈 center horizontally */
-
-        background: rgba(0, 0, 0, 0.8);
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 8px;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-    }
-
-	.theme-button {
-		/* background-color: #333;
-		color: white; */
-        background: linear-gradient(#3a2f1c, #1e1a14); /* dark brown to almost black */
-		color: #e0d7c3; /* parchment-like font color */
-		border: 2px solid #5c4c33;
-		border-radius: 4px;
-        font-family: "Grenze Gotisch", system-ui;
-		font-size: 1rem;
-		letter-spacing: 1px;
+        header .viewmode-container {
+            width: 100%;
+            margin: 0 auto; /* Center the header */
+            padding: 0 1.5rem;
+            align-content: center;
+            height: 100%;
+        }
         
-		padding: 0.6em 1.2em;
-		box-shadow: inset 0 0 4px #00000088, 0 2px 4px #00000066;
-		cursor: pointer;
-		transition: all 0.1s ease-in-out;
-	}
-    .theme-button:hover {
-		background: linear-gradient(#4a3b28, #2b231a);
-		color: #fffbe0;
-		transform: translateY(-1px);
-		box-shadow: inset 0 0 6px #000000aa, 0 4px 8px #00000088;
-	}
+        header ul {
+            margin: 0;
+            padding: 0;
+            padding-top: 10px;
+            list-style: none;
+            display: flex;
+            align-items: stretch;
+            gap: 1.5rem;
+        }
 
-	.theme-button:active {
-		transform: translateY(0px);
-		box-shadow: inset 2px 2px 6px #000000aa;
-	}
-
-    .result-text {
-        font-size: 1.5rem;
-        font-family: "New Rocker", system-ui;
-        /* Dark blood color for results */
-        color: rgba(192, 0, 0, 0.8);
-    }
-
-    .flavor-text {
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        border-radius: 4px;
-        padding: 1rem 2rem;
-
-        /* background-color: rgba(216, 197, 150, 0.6); */
-        background-image: url('assets/kn-parchment.png');
-        background-color: rgba(255,255,255,0.5);
-        background-blend-mode: luminosity;
+        header button {
+            position: relative;
+            padding: 0;
+            cursor: pointer;
+            border: none;
+            color: rgba(255,255,255,0.5);
+            background: none;
+            font-size: 1rem;
+            font-family: "New Rocker", system-ui;
+            text-align: center;
+            
+            transition: color 0.15s ease-in-out; /* 👈 this enables the fade */
+        }
         
-        color: black;
-        font-size: 2rem;
-        font-family: "Jim Nightshade", cursive;
-        font-weight: 400;
-        text-shadow: #4604048a 1px 1px 2px;
-        /* font-style: italic; */
+        /* Red underline effect */
+        header button::after {
+            content: '';
+            position: absolute;
+            height: 4px;
+            width: 100%;
+            bottom: -2px;
+            left: 50%;
+            background-color: red;
+            transform: translateX(-50%) scaleX(0); /* start from center */
+            transform-origin: center;
+            transition: transform 0.05s ease-in-out;
+        }
 
-        width: 100%;
-        box-sizing: border-box;    /* 👈 prevents overflow due to padding */
-    }
+        header button.active {
+            color: rgba(255, 255, 255, 1.0); /* bright white */
+        }
+        
+        /* Active state */
+        header button.active::after {
+            transform: translateX(-50%) scaleX(1); /* expand from center */
+        }
+        
+        header .viewmode-button {
+            height: 24px;
+            padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
 
-    .roll-all-button {
-        padding: .3rem 2rem;
-        padding-top: .5rem;
-        font-size: 1.5rem;
-        font-weight: bold;
-        font-family: 'Kings', serif; /* medieval touch */
-        color: #2c2323;
-        /* text-transform: uppercase; */
+    <style>
+        body {
+            margin: 0;
+            background-image: url('assets/wallpaper.png');
+            color: white;
+            font-family: "Manufacturing Consent", system-ui;
+        }
 
-        background: linear-gradient(145deg, #d4c821, #a68f45, #5a5625); /* aged gold gradient */
-        border: 2px solid #3b3415;
-        border-radius: 6px;
+        .txt-shadow {
+            text-shadow: 
+                2px    2px    2px   rgba(0, 0, 0, 0.75),
+                2px    0px    25px  rgba(0, 0, 0, 0.8), 
+                0px   -2px    5px   rgba(0, 0, 128, 0.85);
+        }
 
-        box-shadow:
-            inset 2px 2px 4px #2e280e,         /* inner dark carving (bottom-right) */
-            inset -2px -2px 4px #e2c99e,      /* inner light highlight (top-left) */
-            0 4px 8px rgba(0, 0, 0, 0.6),     /* outer shadow */
-            0 0 0 2px #655521 inset;          /* faint inner rim */
+        .hero {
+            text-align: center;
+            padding: 1.25rem;
+            /* background-color: #f0f0f0; */
+            border-radius: 8px;
+            margin: 0 auto;
+            max-width: 600px;
+        }
+        
+        .hero div {
+            font-size: 1.5rem;
+        }
 
-        text-shadow:
-            1px 1px 0 #9700004f,                   /* dark base emboss */
-            -1px -1px 1px rgba(255, 255, 255, 0.267),              /* faint top-light highlight */
-            0 2px 2px rgba(255, 240, 32, 0.733);                  /* soft outer text shadow */
+        #hero-logo {
+            width: 70%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+        }
 
-        cursor: pointer;
-        transition: all 0.2s ease;
-        /* margin: 2rem auto; */
-        display: block;
-    }
+        .instructions-tip {
+            margin: 0 0;
+            text-align: center;
 
-    .roll-all-button:hover {
-        transform: scale(1.02);
-        filter: brightness(1.1);
-        box-shadow:
-            inset 3px 3px 6px #2e1e0e,
-            inset -2px -2px 6px #e2c99e,
-            0 6px 14px rgba(0, 0, 0, 0.7),
-            0 0 0 2px #654321 inset;
-    }
-</style>
+            font-family: "Pirata One", system-ui;
+            font-size: 1.2rem;
+        }
+
+        #button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            width: 80%;
+            margin: 0 auto;
+            gap: 1rem;
+        }
+
+        #button-container > div > * {
+            display: block;
+            /* width: 100%; */
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: .5rem;
+            gap: 1rem;
+
+            width: 80%;            /* 👈 set the width */
+            margin: 0 auto;         /* 👈 center horizontally */
+
+            background: rgba(0, 0, 0, 0.8);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .theme-button {
+            /* background-color: #333;
+            color: white; */
+            background: linear-gradient(#3a2f1c, #1e1a14); /* dark brown to almost black */
+            color: #e0d7c3; /* parchment-like font color */
+            border: 2px solid #5c4c33;
+            border-radius: 4px;
+            font-family: "Grenze Gotisch", system-ui;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            
+            padding: 0.6em 1.2em;
+            box-shadow: inset 0 0 4px #00000088, 0 2px 4px #00000066;
+            cursor: pointer;
+            transition: all 0.1s ease-in-out;
+        }
+        .theme-button:hover {
+            background: linear-gradient(#4a3b28, #2b231a);
+            color: #fffbe0;
+            transform: translateY(-1px);
+            box-shadow: inset 0 0 6px #000000aa, 0 4px 8px #00000088;
+        }
+
+        .theme-button:active {
+            transform: translateY(0px);
+            box-shadow: inset 2px 2px 6px #000000aa;
+        }
+
+        .result-text {
+            font-size: 1.5rem;
+            font-family: "New Rocker", system-ui;
+            /* Dark blood color for results */
+            color: rgba(192, 0, 0, 0.8);
+        }
+
+        .flavor-text {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            padding: 1rem 2rem;
+
+            /* background-color: rgba(216, 197, 150, 0.6); */
+            background-image: url('assets/kn-parchment.png');
+            background-color: rgba(255,255,255,0.5);
+            background-blend-mode: luminosity;
+            
+            color: black;
+            font-size: 2rem;
+            font-family: "Jim Nightshade", cursive;
+            font-weight: 400;
+            text-shadow: #4604048a 1px 1px 2px;
+            /* font-style: italic; */
+
+            width: 100%;
+            box-sizing: border-box;    /* 👈 prevents overflow due to padding */
+        }
+
+        .roll-all-button {
+            padding: .3rem 2rem;
+            padding-top: .5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            font-family: 'Kings', serif; /* medieval touch */
+            color: #2c2323;
+            /* text-transform: uppercase; */
+
+            background: linear-gradient(145deg, #d4c821, #a68f45, #5a5625); /* aged gold gradient */
+            border: 2px solid #3b3415;
+            border-radius: 6px;
+
+            box-shadow:
+                inset 2px 2px 4px #2e280e,         /* inner dark carving (bottom-right) */
+                inset -2px -2px 4px #e2c99e,      /* inner light highlight (top-left) */
+                0 4px 8px rgba(0, 0, 0, 0.6),     /* outer shadow */
+                0 0 0 2px #655521 inset;          /* faint inner rim */
+
+            text-shadow:
+                1px 1px 0 #9700004f,                   /* dark base emboss */
+                -1px -1px 1px rgba(255, 255, 255, 0.267),              /* faint top-light highlight */
+                0 2px 2px rgba(255, 240, 32, 0.733);                  /* soft outer text shadow */
+
+            cursor: pointer;
+            transition: all 0.2s ease;
+            /* margin: 2rem auto; */
+            display: block;
+        }
+
+        .roll-all-button:hover {
+            transform: scale(1.02);
+            filter: brightness(1.1);
+            box-shadow:
+                inset 3px 3px 6px #2e1e0e,
+                inset -2px -2px 6px #e2c99e,
+                0 6px 14px rgba(0, 0, 0, 0.7),
+                0 0 0 2px #654321 inset;
+        }
+    </style>
+</head>
 
 <template id="themed-button-template">
     <button class="btn theme-button"></button>
 </template>
-<!-- Declarations, globals, function defs -->
+
+<body>
+    <header>
+        <div class="viewmode-container">
+            <ul>
+                <li>
+                    <button class="viewmode-button" data-mode="HOME">
+                        <span class="material-symbols-outlined">home</span>
+                    </button>
+                </li>
+                <li class="vertical-seperator"></li>
+                <li><button class="viewmode-button" data-mode="EXPLORATION">EXPLORATION</button></li>
+                <li class="vertical-seperator"></li>
+                <li><button class="viewmode-button" data-mode="COMBAT">COMBAT</button></li>
+            </ul>
+
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="home-page">
+                <div class="hero txt-shadow">
+                    <div style="font-size: 1.5rem;">Squeak N Coozy's</div>
+                    <img id="hero-logo" src="assets/kn-logo-borderized.png" alt="SNC Ker Nathalas Logo">
+                    <div style="font-size: 2rem;">Companion App</div>
+                </div>
+                
+                <!-- <p class="instructions-tip txt-shadow">Use the buttons below to roll dice or perform other actions.</p> -->
+            </div>
+            
+            <div class="exploration-page hidden">
+                <div class="exploration-header hero txt-shadow">
+                    <h1>Exploration Phase</h1>
+                    <!-- <p>Roll to explore the dungeon and uncover its secrets.</p> -->
+                </div>
+            </div>
+
+            <div class="combat-page hidden">
+                <div class="combat-header hero txt-shadow">
+                    <h1>Combat Phase</h1>
+                    <!-- <p>Engage in battles against the dungeon's denizens.</p> -->
+                </div>
+            </div>
+
+        </div><!-- end of container -->
+
+</html>
+
+<!-- Declarations, Defs, General Functions -->
 <script>
 
 const CORRIDOR_DESCRIPTIONS = {
@@ -488,6 +629,8 @@ const MONSTER_TABLES = Object.freeze({
 });
 
 
+
+
 function createButton({ id, text, classList = [], onClick }) {
 	const template = document.getElementById("themed-button-template");
 	const clone = template.content.cloneNode(true);
@@ -585,227 +728,297 @@ function showElement(element) {
 }
 </script>
 
-<body>
-    <header>
 
-    </header>
-    <main>
-        <div class="hero txt-shadow">
-            <div style="font-size: 1.5rem;">Squeak N Coozy's</div>
-            <img id="hero-logo" src="assets/kn-logo-borderized.png" alt="SNC Ker Nathalas Logo">
-            <div style="font-size: 2rem;">Companion App</div>
-        </div>
-        
-        <!-- <p class="instructions-tip txt-shadow">Use the buttons below to roll dice or perform other actions.</p> -->
-
+<!-- SPA State Scripts -->
 <script>
 var monsterTableResult = '';
 window.rollContext = {}; // Track state between rolls
 
-window.onload = () => {
-	const container = document.createElement("div");
-	container.id = "button-container";
-	document.body.appendChild(container);
+const homePage = document.querySelector('.home-page');
+const explorationPage = document.querySelector('.exploration-page');
+const combatPage = document.querySelector('.combat-page');
 
-	const phaseGroups = [
-		"encounter-group",
-		"monster-table-group",
-		"monster-select-group",
-		"event-group"
-	];
-
-	// GOLDEN ROLL ALL BUTTON
-	const rollAllButton = document.createElement("button");
-	rollAllButton.textContent = "Roll ALL";
-	rollAllButton.classList.add("roll-all-button");
-	container.appendChild(rollAllButton);
-
-	// Phase 1: Exploration
-	const explorationGroup = createButtonGroup({
-		id: "exploration-group",
-		text: "Exploration (d100)",
-		range: [1, 100],
-		onClick: (result, flavor) => {
-			const roll = randomNumber(1, 100);
-			const isRoom = roll > 25;
-			result.textContent = `${isRoom ? "Room" : "Corridor"} # ${roll}`;
-			flavor.textContent = isRoom
-				? ROOM_DESCRIPTIONS[roll] || "A silent and empty room."
-				: CORRIDOR_DESCRIPTIONS[Math.ceil((roll / 25) * 20)] || "The corridor is eerily quiet.";
-			showElement(flavor);
-
-			resetAllGroups(phaseGroups);
-			window.rollContext.isRoom = isRoom;
-
-			showGroup("encounter-group");
-		}
-	});
-	container.appendChild(explorationGroup);
-
-	// Phase 2: Encounter
-	const encounterGroup = createButtonGroup({
-		id: "encounter-group",
-		text: "Encounter (d20)",
-		range: [1, 20],
-		onClick: (result, flavor) => {
-			const roll = randomNumber(1, 20);
-			result.textContent = roll;
-
-			const isRoom = window.rollContext.isRoom;
-			const encounterThreshold = isRoom ? 10 : 15;
-
-			if (roll >= encounterThreshold) {
-				resetButtonGroup("monster-table-group");
-				resetButtonGroup("monster-select-group");
-				showGroup("monster-table-group");
-				hideGroup("event-group");
-				hideGroup("monster-select-group");
-			} else {
-				resetButtonGroup("event-group");
-				showGroup("event-group");
-				hideGroup("monster-table-group");
-				hideGroup("monster-select-group");
-			}
-		}
-	});
-	encounterGroup.classList.add("hidden");
-	container.appendChild(encounterGroup);
-
-	// Phase 3a: Monster Table
-	const monsterTableGroup = createButtonGroup({
-		id: "monster-table-group",
-		text: "Monster Table (d6)",
-		range: [1, 6],
-		onClick: (result, flavor) => {
-			const roll = randomNumber(1, 6);
-			result.textContent = roll;
-			flavor.textContent = roll <= 3 ? "Table A" : "Table B";
-
-			monsterTableResult = roll <= 3 ? "A" : "B";
-			const monsterButton = document.getElementById("monster-select-group-btn");
-			if (monsterButton) {
-				monsterButton.textContent = `Monster (Table ${monsterTableResult} - d20)`;
-				resetButtonGroup("monster-select-group");
-			}
-			showElement(flavor);
-			showGroup("monster-select-group");
-		}
-	});
-	monsterTableGroup.classList.add("hidden");
-	container.appendChild(monsterTableGroup);
-
-	// Phase 3b: Monster Select
-	const monsterSelectGroup = createButtonGroup({
-		id: "monster-select-group",
-		text: "Monster (d20)",
-		range: [1, 20],
-		onClick: (result, flavor) => {
-			const roll = randomNumber(1, 20);
-			result.textContent = roll;
-
-			const table = MONSTER_TABLES[monsterTableResult];
-			const monster = table[roll] || "ERROR - INVALID ENTRY FROM MONSTER_TABLES";
-
-			flavor.textContent = `${monster} (p. ${121 + roll})`;
-			showElement(flavor);
-		}
-	});
-	monsterSelectGroup.classList.add("hidden");
-	container.appendChild(monsterSelectGroup);
-
-	// Phase 3c: Event
-	const eventGroup = createButtonGroup({
-		id: "event-group",
-		text: "Event (d100)",
-		range: [1, 100],
-		onClick: (result, flavor) => {
-			const roll = randomNumber(1, 100);
-			result.textContent = roll;
-
-			const event = (roll <= 10) ? 1 : (roll <= 20) ? 11 : (roll <= 30) ? 21 : roll;
-			flavor.textContent = EVENTS[event] || "ERROR - INVALID ENTRY FROM EVENTS";
-			showElement(flavor);
-		}
-	});
-	eventGroup.classList.add("hidden");
-	container.appendChild(eventGroup);
-
-	// ROLL ALL FUNCTION
-	rollAllButton.onclick = () => {
-		// Exploration
-		const explorationRoll = randomNumber(1, 100);
-		const isRoom = explorationRoll > 25;
-		window.rollContext.isRoom = isRoom;
-
-		const explorationResult = document.querySelector("#exploration-group .result-text");
-		const explorationFlavor = document.querySelector("#exploration-group .flavor-text");
-		explorationResult.textContent = `${isRoom ? "Room" : "Corridor"} # ${explorationRoll}`;
-		explorationFlavor.textContent = isRoom
-			? ROOM_DESCRIPTIONS[explorationRoll] || "A silent and empty room."
-			: CORRIDOR_DESCRIPTIONS[Math.ceil((explorationRoll / 25) * 20)] || "The corridor is eerily quiet.";
-		showElement(explorationFlavor);
-
-		resetAllGroups(phaseGroups);
-		showGroup("encounter-group");
-
-		// Encounter
-		const encounterRoll = randomNumber(1, 20);
-		const encounterResult = document.querySelector("#encounter-group .result-text");
-		encounterResult.textContent = encounterRoll;
-
-		const encounterThreshold = isRoom ? 10 : 15;
-		if (encounterRoll >= encounterThreshold) {
-			// Monster Table
-			resetButtonGroup("monster-table-group");
-			showGroup("monster-table-group");
-			hideGroup("event-group");
-			hideGroup("monster-select-group");
-
-			const monsterTableRoll = randomNumber(1, 6);
-			const tableFlavor = document.querySelector("#monster-table-group .flavor-text");
-			const tableResult = document.querySelector("#monster-table-group .result-text");
-			tableResult.textContent = monsterTableRoll;
-			tableFlavor.textContent = monsterTableRoll <= 3 ? "Table A" : "Table B";
-			monsterTableResult = monsterTableRoll <= 3 ? "A" : "B";
-			showElement(tableFlavor);
-
-			const monsterButton = document.getElementById("monster-select-group-btn");
-			if (monsterButton) {
-				monsterButton.textContent = `Monster (Table ${monsterTableResult} - d20)`;
-				resetButtonGroup("monster-select-group");
-			}
-			showGroup("monster-select-group");
-
-			// Monster Select
-			const monsterRoll = randomNumber(1, 20);
-			const monsterResultText = document.querySelector("#monster-select-group .result-text");
-			const monsterFlavor = document.querySelector("#monster-select-group .flavor-text");
-			monsterResultText.textContent = monsterRoll;
-			const table = MONSTER_TABLES[monsterTableResult];
-			const monster = table[monsterRoll] || "ERROR - INVALID ENTRY FROM MONSTER_TABLES";
-			monsterFlavor.textContent = `${monster} (p. ${121 + monsterRoll})`;
-			showElement(monsterFlavor);
-
-		} else {
-			// Event
-			resetButtonGroup("event-group");
-			showGroup("event-group");
-			hideGroup("monster-table-group");
-			hideGroup("monster-select-group");
-
-			const eventRoll = randomNumber(1, 100);
-			const eventResult = document.querySelector("#event-group .result-text");
-			const eventFlavor = document.querySelector("#event-group .flavor-text");
-			eventResult.textContent = eventRoll;
-			const eventKey = (eventRoll <= 10) ? 1 : (eventRoll <= 20) ? 11 : (eventRoll <= 30) ? 21 : eventRoll;
-			eventFlavor.textContent = EVENTS[eventKey] || "ERROR - INVALID ENTRY FROM EVENTS";
-			showElement(eventFlavor);
-		}
-	};
+const PAGES = {
+    HOME: homePage,
+    EXPLORATION: explorationPage,
+    COMBAT: combatPage
 };
 </script>
 
+<!-- Main Execution Scripts -->
+<script>
+window.onload = () => {
+    initExplorationPage();
+};
+</script>
+
+<!-- Exploration Page Scripts -->
+<script>
+    function initExplorationPage() {
+        const btnContainer = document.createElement("div");
+        btnContainer.id = "button-container";
+        explorationPage.appendChild(btnContainer);
+
+        const phaseGroups = [
+            "encounter-group",
+            "monster-table-group",
+            "monster-select-group",
+            "event-group"
+        ];
+
+        // GOLDEN ROLL ALL BUTTON
+        const rollAllButton = document.createElement("button");
+        rollAllButton.textContent = "Roll ALL";
+        rollAllButton.classList.add("roll-all-button");
+        btnContainer.appendChild(rollAllButton);
+
+        // Phase 1: Exploration
+        const explorationGroup = createButtonGroup({
+            id: "exploration-group",
+            text: "Exploration (d100)",
+            range: [1, 100],
+            onClick: (result, flavor) => {
+                const roll = randomNumber(1, 100);
+                const isRoom = roll > 25;
+                result.textContent = `${isRoom ? "Room" : "Corridor"} # ${roll}`;
+                flavor.textContent = isRoom
+                    ? ROOM_DESCRIPTIONS[roll] || "A silent and empty room."
+                    : CORRIDOR_DESCRIPTIONS[Math.ceil((roll / 25) * 20)] || "The corridor is eerily quiet.";
+                showElement(flavor);
+
+                resetAllGroups(phaseGroups);
+                window.rollContext.isRoom = isRoom;
+
+                showGroup("encounter-group");
+            }
+        });
+        btnContainer.appendChild(explorationGroup);
+
+        // Phase 2: Encounter
+        const encounterGroup = createButtonGroup({
+            id: "encounter-group",
+            text: "Encounter (d20)",
+            range: [1, 20],
+            onClick: (result, flavor) => {
+                const roll = randomNumber(1, 20);
+                result.textContent = roll;
+
+                const isRoom = window.rollContext.isRoom;
+                const encounterThreshold = isRoom ? 10 : 15;
+
+                if (roll >= encounterThreshold) {
+                    resetButtonGroup("monster-table-group");
+                    resetButtonGroup("monster-select-group");
+                    showGroup("monster-table-group");
+                    hideGroup("event-group");
+                    hideGroup("monster-select-group");
+                } else {
+                    resetButtonGroup("event-group");
+                    showGroup("event-group");
+                    hideGroup("monster-table-group");
+                    hideGroup("monster-select-group");
+                }
+            }
+        });
+        encounterGroup.classList.add("hidden");
+        btnContainer.appendChild(encounterGroup);
+
+        // Phase 3a: Monster Table
+        const monsterTableGroup = createButtonGroup({
+            id: "monster-table-group",
+            text: "Monster Table (d6)",
+            range: [1, 6],
+            onClick: (result, flavor) => {
+                const roll = randomNumber(1, 6);
+                result.textContent = roll;
+                flavor.textContent = roll <= 3 ? "Table A" : "Table B";
+
+                monsterTableResult = roll <= 3 ? "A" : "B";
+                const monsterButton = document.getElementById("monster-select-group-btn");
+                if (monsterButton) {
+                    monsterButton.textContent = `Monster (Table ${monsterTableResult} - d20)`;
+                    resetButtonGroup("monster-select-group");
+                }
+                showElement(flavor);
+                showGroup("monster-select-group");
+            }
+        });
+        monsterTableGroup.classList.add("hidden");
+        btnContainer.appendChild(monsterTableGroup);
+
+        // Phase 3b: Monster Select
+        const monsterSelectGroup = createButtonGroup({
+            id: "monster-select-group",
+            text: "Monster (d20)",
+            range: [1, 20],
+            onClick: (result, flavor) => {
+                const roll = randomNumber(1, 20);
+                result.textContent = roll;
+
+                const table = MONSTER_TABLES[monsterTableResult];
+                const monster = table[roll] || "ERROR - INVALID ENTRY FROM MONSTER_TABLES";
+
+                flavor.textContent = `${monster} (p. ${121 + roll})`;
+                showElement(flavor);
+            }
+        });
+        monsterSelectGroup.classList.add("hidden");
+        btnContainer.appendChild(monsterSelectGroup);
+
+        // Phase 3c: Event
+        const eventGroup = createButtonGroup({
+            id: "event-group",
+            text: "Event (d100)",
+            range: [1, 100],
+            onClick: (result, flavor) => {
+                const roll = randomNumber(1, 100);
+                result.textContent = roll;
+
+                const event = (roll <= 10) ? 1 : (roll <= 20) ? 11 : (roll <= 30) ? 21 : roll;
+                flavor.textContent = EVENTS[event] || "ERROR - INVALID ENTRY FROM EVENTS";
+                showElement(flavor);
+            }
+        });
+        eventGroup.classList.add("hidden");
+        btnContainer.appendChild(eventGroup);
+
+        // ROLL ALL FUNCTION
+        rollAllButton.onclick = () => {
+            // Exploration
+            const explorationRoll = randomNumber(1, 100);
+            const isRoom = explorationRoll > 25;
+            window.rollContext.isRoom = isRoom;
+
+            const explorationResult = document.querySelector("#exploration-group .result-text");
+            const explorationFlavor = document.querySelector("#exploration-group .flavor-text");
+            explorationResult.textContent = `${isRoom ? "Room" : "Corridor"} # ${explorationRoll}`;
+            explorationFlavor.textContent = isRoom
+                ? ROOM_DESCRIPTIONS[explorationRoll] || "A silent and empty room."
+                : CORRIDOR_DESCRIPTIONS[Math.ceil((explorationRoll / 25) * 20)] || "The corridor is eerily quiet.";
+            showElement(explorationFlavor);
+
+            resetAllGroups(phaseGroups);
+            showGroup("encounter-group");
+
+            // Encounter
+            const encounterRoll = randomNumber(1, 20);
+            const encounterResult = document.querySelector("#encounter-group .result-text");
+            encounterResult.textContent = encounterRoll;
+
+            const encounterThreshold = isRoom ? 10 : 15;
+            if (encounterRoll >= encounterThreshold) {
+                // Monster Table
+                resetButtonGroup("monster-table-group");
+                showGroup("monster-table-group");
+                hideGroup("event-group");
+                hideGroup("monster-select-group");
+
+                const monsterTableRoll = randomNumber(1, 6);
+                const tableFlavor = document.querySelector("#monster-table-group .flavor-text");
+                const tableResult = document.querySelector("#monster-table-group .result-text");
+                tableResult.textContent = monsterTableRoll;
+                tableFlavor.textContent = monsterTableRoll <= 3 ? "Table A" : "Table B";
+                monsterTableResult = monsterTableRoll <= 3 ? "A" : "B";
+                showElement(tableFlavor);
+
+                const monsterButton = document.getElementById("monster-select-group-btn");
+                if (monsterButton) {
+                    monsterButton.textContent = `Monster (Table ${monsterTableResult} - d20)`;
+                    resetButtonGroup("monster-select-group");
+                }
+                showGroup("monster-select-group");
+
+                // Monster Select
+                const monsterRoll = randomNumber(1, 20);
+                const monsterResultText = document.querySelector("#monster-select-group .result-text");
+                const monsterFlavor = document.querySelector("#monster-select-group .flavor-text");
+                monsterResultText.textContent = monsterRoll;
+                const table = MONSTER_TABLES[monsterTableResult];
+                const monster = table[monsterRoll] || "ERROR - INVALID ENTRY FROM MONSTER_TABLES";
+                monsterFlavor.textContent = `${monster} (p. ${121 + monsterRoll})`;
+                showElement(monsterFlavor);
+
+            } else {
+                // Event
+                resetButtonGroup("event-group");
+                showGroup("event-group");
+                hideGroup("monster-table-group");
+                hideGroup("monster-select-group");
+
+                const eventRoll = randomNumber(1, 100);
+                const eventResult = document.querySelector("#event-group .result-text");
+                const eventFlavor = document.querySelector("#event-group .flavor-text");
+                eventResult.textContent = eventRoll;
+                const eventKey = (eventRoll <= 10) ? 1 : (eventRoll <= 20) ? 11 : (eventRoll <= 30) ? 21 : eventRoll;
+                eventFlavor.textContent = EVENTS[eventKey] || "ERROR - INVALID ENTRY FROM EVENTS";
+                showElement(eventFlavor);
+            }
+        };
+    }
+</script>
 
 
+<!-- Combat Page Scripts -->
+<script>
 
-</html>
+</script>
+
+<!-- View-Mode Scripts -->
+<script>
+const ViewModes = {
+	HOME: "HOME",
+	EXPLORATION: "EXPLORATION",
+	COMBAT: "COMBAT",
+};
+
+// let currentViewMode = ViewModes.HOME; // default state is HOME
+// let currentViewMode = ViewModes.EXPLORATION; // default state is HOME
+let currentViewMode = ViewModes.COMBAT; // default state is HOME
+
+function initViewModeButtons() {
+	const buttons = document.querySelectorAll('.viewmode-button');
+	buttons.forEach(button => {
+		button.addEventListener('click', () => {
+			const selectedMode = button.dataset.mode;
+			setViewMode(selectedMode);
+		});
+	});
+	updateViewModeUI();
+}
+
+function setViewMode(mode) {
+	if (!Object.values(ViewModes).includes(mode)) return;
+
+	currentViewMode = mode;
+	updateViewModeUI();
+
+	// Hide all pages
+	Object.values(PAGES).forEach(page => {
+		page.classList.add("hidden");
+	});
+
+	// Show selected page
+	const pageToShow = PAGES[currentViewMode];
+	if (pageToShow) {
+		pageToShow.classList.remove("hidden");
+	}
+
+	console.log("Switched to:", currentViewMode);
+}
+
+function updateViewModeUI() {
+	document.querySelectorAll('.viewmode-button').forEach(btn => {
+		if (btn.dataset.mode === currentViewMode) {
+			btn.classList.add('active');
+		} else {
+			btn.classList.remove('active');
+		}
+	});
+}
+
+// Run on page load
+window.addEventListener('DOMContentLoaded', () => {
+	initViewModeButtons();
+    setViewMode(currentViewMode); // Set initial view mode
+});
+</script>
