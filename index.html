@@ -251,6 +251,29 @@
             box-sizing: border-box;    /* 👈 prevents overflow due to padding */
         }
 
+        .flavor-text-wrapper {
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 4px;
+            padding: 1rem 2rem;
+
+            background-image: url('assets/kn-parchment.png');
+            background-color: rgba(255, 255, 255, 0.5);
+            background-blend-mode: luminosity;
+            background-size: cover;
+            background-position: center;
+
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .flavor-text-content {
+            color: black;
+            font-size: 2rem;
+            font-family: "Jim Nightshade", cursive;
+            font-weight: 400;
+            text-shadow: #4604048a 1px 1px 2px;
+        }
+
         /* UNUSED */
         .roll-all-button {
             padding: .3rem 2rem;
@@ -386,12 +409,65 @@
 
     .mechanism-report {
         margin: 2.5rem auto;
+        margin-bottom: 0.5rem;
         padding: 12px;
         font-size: 1.2rem;
         text-align: center;
     }
     .mechanism-report .flavor-text {
         margin: 0;
+    }
+
+    .mechanism-is-locked {
+        color: gold;
+        font-weight: bold;
+    }
+
+    .mechanism-is-trapped {
+        color: rgb(150, 9, 9);
+        font-weight: bold;
+    }
+
+    .report-details-wrapper {
+        /* width: 100%; */
+        text-align: center;
+        font-family: "New Rocker", serif;
+        padding-bottom: 1rem;
+    }
+
+    .report-heading {
+        color: #fff;
+        font-size: 1.5rem;
+        margin-bottom: 0;
+        line-height: 0;
+    }
+
+    .difficulty-columns {
+        margin-top: 1rem;
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        flex-wrap: wrap;
+    }
+
+    .difficulty-column {
+        background: black;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 6px;
+        padding: 1rem 1.5rem;
+        min-width: 160px;
+        color: #fff;
+    }
+
+    .difficulty-label {
+        font-weight: bold;
+        margin-bottom: 0.25rem;
+    }
+
+    .difficulty-detail {
+        margin-top: 1rem;
+        font-style: italic;
+        font-size: 1.2rem;
     }
     </style>
 </head>
@@ -465,21 +541,36 @@
                     <!-- <p>Interact with the dungeon's mechanisms and traps.</p> -->
                 </div>
                 <div class="mechanisms-button-container">
-                    <button id="door-mechanism-button" class="golden-button" onclick="this.blur();">
+                    <button id="door-mechanism-button" class="golden-button" onclick="this.blur(); rollDoorExamination();">
                         DOOR
                     </button>
-                    <button id="container-mechanism-button" class="golden-button" onclick="this.blur();">
+                    <button id="container-mechanism-button" class="golden-button" onclick="this.blur(); rollContainerExamination();">
                         CONTAINER
                     </button>
                 </div>
                 <div class="mechanism-report button-group">
-                    <p class="flavor-text">The mechanism is ...</p>
+                    <div class="flavor-text-wrapper">
+                        <div id="mechanism-message" class="flavor-text-content">Awaiting your examination ...</div>
+                    </div>
+                </div>
+                <div id="mechanism-report-details" class="report-details-wrapper button-group hidden">
+                    <!-- Here we need a chart to follow the message -->
+                    <!-- Includes heading "Difficulty" -->
+                    <!-- Columns flex -->
+                    <!-- If not trapped, show only the lock column -->
+                    <!-- If trapped, show both the lock column and trap column -->
+                    <!-- Both columns display 1) LOCK/TRAP subheading, 2) difficulty + modifier (eg. Child's Play +30) -->
+                    <h3 class="report-heading">Difficulty</h3>
+                    <div id="difficulty-columns" class="difficulty-columns">
+                        <!-- JS will populate lock/trap columns here -->
+                    </div>
                 </div>
             </div>
 
             <div class="combat-page hidden">
                 <div class="combat-header page-title txt-shadow">
                     <h1>Combat Phase</h1>
+                    <h3>w.i.p.</h3>
                     <!-- <p>Engage in battles against the dungeon's denizens.</p> -->
                 </div>
             </div>
@@ -843,7 +934,7 @@ function createButtonGroup({ id, text, range, onClick }) {
 }
 
 function randomNumber(min, max) {
-	return Math.floor(Math.random() * (max - min + 1)) + min;
+    return Math.floor(Math.random() * max) + min;
 }
 
 function resetButtonGroup(id) {
@@ -1124,10 +1215,161 @@ function initExplorationPage() {
 
 <!-- Mechanisms Page Scripts -->
 <script>
+const DIFFICULTY_MODIFIER_CLASSES = {
+    1: {diceValues: [1],    difficulty: "Child's Play", modifier: "+30"},
+    2: {diceValues: [2],    difficulty: "Effortless",   modifier: "+20"},
+    3: {diceValues: [3],    difficulty: "Easy",         modifier: "+10"},
+    4: {diceValues: [4, 5], difficulty: "Normal",       modifier: "+0"},
+    6: {diceValues: [6],    difficulty: "Demanding",    modifier: "-10"},
+    7: {diceValues: [7],    difficulty: "Hard",         modifier: "-20"},
+    8: {diceValues: [8],    difficulty: "Impossible",   modifier: "-30"}
+};
+
+const Mechanisms = {
+    DOOR: {name: "Door", minLockThreshold: 12},
+    CONTAINER: {name: "Container", minLockThreshold: 10}
+};
+
+let mechanismReportText = '';
+
 function initMechanismsPage() {
     // Initialize any specific functionality for the Mechanisms page here
     console.log("Mechanisms page initialized.");
 }
+
+function rollDifficultyModifier() {
+    let roll = randomNumber(1, 8);
+    return Object.values(DIFFICULTY_MODIFIER_CLASSES).find(mod => mod.diceValues.includes(roll));
+}
+
+function isMechanismLocked(mechanism, diceRoll) {
+    return diceRoll >= mechanism.minLockThreshold;
+}
+
+function isMechanismTrapped(diceRoll) {
+    return diceRoll >= 7;
+}
+
+function rollMechanismExamination(mechanism) {
+    let lockRoll = null;
+    let isLocked = false;
+    let trapRoll = null;
+    let isTrapped = false;
+    let lockDifficulty = null;
+    let trapDifficulty = null;
+    
+    lockRoll = randomNumber(1, 20);
+    isLocked = isMechanismLocked(mechanism, lockRoll);
+    if (isLocked) {
+        lockDifficulty = rollDifficultyModifier();
+        
+        trapRoll = randomNumber(1, 10);
+        isTrapped = isMechanismTrapped(trapRoll);
+        if (isTrapped) {
+            trapDifficulty = rollDifficultyModifier();
+        }
+    }
+    
+    const result = {
+        mechanism: mechanism,
+        lockRoll: lockRoll,
+        isLocked: isLocked,
+        trapRoll: trapRoll,
+        isTrapped: isTrapped,
+        lockDifficulty: lockDifficulty,
+        trapDifficulty: trapDifficulty
+    }
+
+    logMechanismReport(
+        result.mechanism,
+        result.lockRoll,
+        result.isLocked,
+        result.trapRoll,
+        result.isTrapped,
+        result.lockDifficulty,
+        result.trapDifficulty
+    );
+
+    // Display the result in the UI
+    displayMechanismMessage(result);
+    displayDifficultyColumns(result);
+}
+
+function displayMechanismMessage(result) {
+	const messageDiv = document.getElementById('mechanism-message');
+
+	const lockedText = result.isLocked
+		? `<span class="mechanism-is-locked txt-shadow">LOCKED</span>`
+		: `NOT locked`;
+
+    const lockRollText = `<span class="txt-shadow" style="color: white;">[${result.lockRoll}]</span>`;
+    
+	const trappedText = result.isTrapped
+    ? `<span class="mechanism-is-trapped txt-shadow">TRAPPED</span>`
+    : `NOT trapped`;
+
+    const trapRollText = result.isTrapped
+        ? `<span class="txt-shadow" style="color: white;"> [${result.trapRoll}]</span>`
+        : ``;
+
+    messageDiv.innerHTML = `The ${result.mechanism.name} is ${lockedText} ${lockRollText} and ${trappedText}${trapRollText}.`;
+}
+
+function displayDifficultyColumns(result) {
+    const reportDetailsWrapper = document.getElementById('mechanism-report-details');
+
+	const container = document.getElementById('difficulty-columns');
+	container.innerHTML = ''; // Clear previous content
+
+    if (!result.isLocked && !result.isTrapped) {
+        reportDetailsWrapper.classList.add('hidden'); // Hide the container if no difficulties
+        return;
+    }
+
+	if (result.isLocked) {
+		const lockCol = document.createElement('div');
+		lockCol.classList.add('difficulty-column');
+		lockCol.innerHTML = `
+			<div class="difficulty-label">LOCK</div>
+			<div class="difficulty-detail">${result.lockDifficulty.difficulty} (${result.lockDifficulty.modifier})</div>
+		`;
+		container.appendChild(lockCol);
+
+        reportDetailsWrapper.classList.remove('hidden'); // Show the container
+	}
+
+	if (result.isTrapped) {
+		const trapCol = document.createElement('div');
+		trapCol.classList.add('difficulty-column');
+		trapCol.innerHTML = `
+			<div class="difficulty-label">TRAP</div>
+			<div class="difficulty-detail">${result.trapDifficulty.difficulty} (${result.trapDifficulty.modifier})</div>
+		`;
+		container.appendChild(trapCol);
+	}
+}
+
+function rollDoorExamination() {
+    rollMechanismExamination(Mechanisms.DOOR);
+}
+
+function rollContainerExamination() {
+    rollMechanismExamination(Mechanisms.CONTAINER);
+}
+function logMechanismReport(mechanism, lockRoll, isLocked, trapRoll, isTrapped, lockDifficulty, trapDifficulty) {
+    mechanismReportText = `Mechanism: ${mechanism.name}\n`;
+    mechanismReportText += `Locked: ${isLocked ? "Yes" : "No"} (Rolled: ${lockRoll})\n`;
+    if (isLocked) {
+        mechanismReportText += `Lock Difficulty: ${lockDifficulty.difficulty} ${lockDifficulty.modifier}\n`;
+        mechanismReportText += `Trapped: ${isTrapped ? "Yes" : "No"} (Rolled: ${trapRoll})\n`;
+    }
+    if (isTrapped) {
+        mechanismReportText += `Trap Difficulty: ${trapDifficulty.difficulty} ${trapDifficulty.modifier}\n`;
+    }
+    
+    console.log(mechanismReportText);
+}
+
 </script>
 
 <!-- Combat Page Scripts -->
@@ -1147,9 +1389,9 @@ const ViewModes = {
 	COMBAT: "COMBAT",
 };
 
-// let currentViewMode = ViewModes.HOME; // default state is HOME
+let currentViewMode = ViewModes.HOME; // default state is HOME
 // let currentViewMode = ViewModes.EXPLORATION; 
-let currentViewMode = ViewModes.MECHANISMS; 
+// let currentViewMode = ViewModes.MECHANISMS; 
 // let currentViewMode = ViewModes.COMBAT;
 
 function initViewModeButtons() {
