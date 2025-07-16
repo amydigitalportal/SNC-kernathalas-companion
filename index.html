@@ -1499,6 +1499,16 @@ const CombatManager = (() => {
 	const MIN_PLAYERS = 1;
 	let monsterActivities = [];
 
+    const HitLocations = {
+        RIGHT_LEG:  {name: "Right Leg", min: 1,     max: 3},
+        LEFT_LEG:   {name: "Left Leg",  min: 4,     max: 6},
+        ABDOMEN:    {name: "Abdomen",   min: 7,     max: 9},
+        CHEST:      {name: "Chest",     min: 10,    max: 12},
+        LEFT_ARM:   {name: "Left Arm",  min: 13,    max: 15},
+        RIGHT_ARM:  {name: "Right Arm", min: 16,    max: 18},
+        HEAD:       {name: "Head",      min: 19,    max: 20}
+    };
+
 	function addPlayer() {
 		if (numPlayers < MAX_PLAYERS) numPlayers++;
 	}
@@ -1523,6 +1533,19 @@ const CombatManager = (() => {
 		return randomNumber(1, 100);
 	}
 
+    function rollHitLocationResult() {
+        const roll = randomNumber(1, 20);
+        for (const location of Object.values(HitLocations)) {
+            if (roll >= location.min && roll <= location.max) {
+                return {
+                    name: location.name,
+                    roll: roll
+                };
+            }
+        }
+        return "UNKNOWN_HIT_LOCATION"; // Fallback
+    }
+
 	function generateMonsterActivity() {
         let date = new Date();
         let time = date.toLocaleString([], {
@@ -1535,7 +1558,8 @@ const CombatManager = (() => {
             timestamp: time,
 			target: rollTarget(),
 			action: rollAction(),
-			combatCheck: rollCombatCheck()
+			combatCheck: rollCombatCheck(),
+            hitLocation: rollHitLocationResult()
 		};
 	}
 
@@ -1549,12 +1573,6 @@ const CombatManager = (() => {
 		return monsterActivities;
 	}
 
-    function getMonsterActivityListFormatted() {
-      return monsterActivities.map((act, i) =>
-			`[${i + 1}] Target: [${act.target}] → Action [${act.action}] → Check [${act.combatCheck}]`
-		).join("\n");
-    }
-
 	// Expose methods for use
 	return {
         getNumPlayers: () => numPlayers,
@@ -1567,7 +1585,6 @@ const CombatManager = (() => {
 		generateMonsterActivity,
 		appendMonsterActivity,
 		getMonsterActivityList,
-        getMonsterActivityListFormatted
 	};
 })();
 
@@ -1621,8 +1638,19 @@ function initCombatPage() {
             activityListEl.classList.remove("hidden");
     
             monsterActivities.forEach((act, i) => {
+                
+                const timestamp = document.createElement("span");
+                timestamp.textContent = `[${act.timestamp}]`;
+                
+                const data = document.createElement("pre");
+                data.textContent = `Target: [${act.target}] → Action [${act.action}] → Check: [${act.combatCheck.toString().padStart(3)}] → Hit Location: ${act.hitLocation.name} [${act.hitLocation.roll}]`;
+                
                 const li = document.createElement("li");
-                li.textContent = `[${act.timestamp}] Target: [${act.target}] → Action [${act.action}] → Check: [${act.combatCheck}]`;
+                li.appendChild(timestamp);
+                li.appendChild(document.createElement("br")); // Add a line break
+                li.appendChild(data);
+
+                // li.textContent = `[${act.timestamp}] Target: [${act.target}] → Action [${act.action}] → Check: [${act.combatCheck}] → Hit Location [${act.hitLocation}]`;
                 activityListEl.appendChild(li);
             });
         }
