@@ -513,9 +513,9 @@
     padding: 0.5rem .5rem;
 }
 
-/* #reset-players-button {
-    margin-top: 1rem;
-} */
+.player-count-wrapper {
+    padding: 1rem;
+}
 
 .generate-activity-button-container {
     padding: 1rem 0;
@@ -530,6 +530,8 @@
     min-height: 100px;
 	max-height: 200px;       /* 👈 limit height */
 	overflow-y: auto;        /* 👈 enable vertical scroll */
+    overflow-x: hidden;
+    overflow-wrap: break-word;  /* ✅ Ensures long words break properly */
     font-family: "Inconsolata", monospace;
 }
 
@@ -550,10 +552,12 @@
     text-align: left;      /* optional: center text inside li */
 }
 
-
-.player-count-wrapper {
-    padding: 1rem;
+.log-box pre {
+	white-space: pre-wrap;     /* ✅ allows wrapping */
+	word-break: break-word;    /* ✅ helps break long tokens */
+	overflow-wrap: break-word; /* ✅ extra robustness */
 }
+
     </style>
 </head>
 
