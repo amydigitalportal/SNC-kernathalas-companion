@@ -1327,6 +1327,10 @@ function initExplorationPage() {
 
             showGroup("monster-select-group");
             monsterSelectOnClick(...resultFlavor.monsterSelect);
+        } else {
+            // Roll event
+            showGroup("event-group");
+            eventOnClick(...resultFlavor.event);
         }
     };
 
