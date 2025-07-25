@@ -1128,210 +1128,211 @@ window.onload = () => {
 <!-- Exploration Page Scripts -->
 <script>
 function initExplorationPage() {
-    const btnContainer = document.createElement("div");
-    btnContainer.id = "button-container";
-    explorationPage.appendChild(btnContainer);
+	const btnContainer = document.createElement("div");
+	btnContainer.id = "button-container";
+	explorationPage.appendChild(btnContainer);
 
-    const phaseGroups = [
-        "encounter-group",
-        "monster-table-group",
-        "monster-select-group",
-        "event-group"
-    ];
+	const phaseGroups = [
+		"encounter-group",
+		"monster-table-group",
+		"monster-select-group",
+		"event-group"
+	];
 
-    // GOLDEN ROLL ALL BUTTON
-    const rollAllButton = document.createElement("button");
-    rollAllButton.textContent = "Roll ALL";
-    // rollAllButton.classList.add("roll-all-button");
-    rollAllButton.classList.add("golden-button");
-    btnContainer.appendChild(rollAllButton);
+	// GOLDEN ROLL ALL BUTTON
+	const rollAllButton = document.createElement("button");
+	rollAllButton.textContent = "Roll ALL";
+	rollAllButton.classList.add("golden-button");
+	btnContainer.appendChild(rollAllButton);
 
-    // Phase 1: Exploration
-    const explorationGroup = createButtonGroup({
-        id: "exploration-group",
-        text: "Exploration (d100)",
-        range: [1, 100],
-        onClick: (result, flavor) => {
-            const roll = randomNumber(1, 100);
-            const isRoom = roll > 25;
-            result.textContent = `${isRoom ? "Room" : "Corridor"} # ${roll}`;
-            flavor.textContent = isRoom
-                ? ROOM_DESCRIPTIONS[roll] || "A silent and empty room."
-                : CORRIDOR_DESCRIPTIONS[Math.ceil((roll / 25) * 20)] || "The corridor is eerily quiet.";
-            showElement(flavor);
+	// Store onClick references
+	let explorationOnClick, encounterOnClick, monsterTableOnClick, monsterSelectOnClick, eventOnClick;
 
-            resetAllGroups(phaseGroups);
-            window.rollContext.isRoom = isRoom;
+	// Phase 1: Exploration
+	explorationOnClick = (result, flavor) => {
+		const roll = randomNumber(1, 100);
+		const isRoom = roll > 25;
+		result.textContent = `${isRoom ? "Room" : "Corridor"} # ${roll}`;
+		flavor.textContent = isRoom
+			? ROOM_DESCRIPTIONS[roll] || "A silent and empty room."
+			: CORRIDOR_DESCRIPTIONS[Math.ceil((roll / 25) * 20)] || "The corridor is eerily quiet.";
+		showElement(flavor);
 
-            showGroup("encounter-group");
-        }
-    });
-    btnContainer.appendChild(explorationGroup);
+		resetAllGroups(phaseGroups);
+		window.rollContext.isRoom = isRoom;
+		showGroup("encounter-group");
+	};
 
-    // Phase 2: Encounter
-    const encounterGroup = createButtonGroup({
-        id: "encounter-group",
-        text: "Encounter (d20)",
-        range: [1, 20],
-        onClick: (result, flavor) => {
-            const roll = randomNumber(1, 20);
-            result.textContent = roll;
+	const explorationGroup = createButtonGroup({
+		id: "exploration-group",
+		text: "Exploration (d100)",
+		range: [1, 100],
+		onClick: explorationOnClick
+	});
+	btnContainer.appendChild(explorationGroup);
 
-            const isRoom = window.rollContext.isRoom;
-            const encounterThreshold = isRoom ? 10 : 15;
+	// Phase 2: Encounter
+    encounterOnClick = (result, flavor) => {
+        const roll = randomNumber(1, 20);
+        result.textContent = roll;
 
-            if (roll >= encounterThreshold) {
-                resetButtonGroup("monster-table-group");
-                resetButtonGroup("monster-select-group");
-                showGroup("monster-table-group");
-                hideGroup("event-group");
-                hideGroup("monster-select-group");
-            } else {
-                resetButtonGroup("event-group");
-                showGroup("event-group");
-                hideGroup("monster-table-group");
-                hideGroup("monster-select-group");
-            }
-        }
-    });
-    encounterGroup.classList.add("hidden");
-    btnContainer.appendChild(encounterGroup);
-
-    // Phase 3a: Monster Table
-    const monsterTableGroup = createButtonGroup({
-        id: "monster-table-group",
-        text: "Monster Table (d6)",
-        range: [1, 6],
-        onClick: (result, flavor) => {
-            const roll = randomNumber(1, 6);
-            result.textContent = roll;
-            flavor.textContent = roll <= 3 ? "Table A" : "Table B";
-
-            monsterTableResult = roll <= 3 ? "A" : "B";
-            const monsterButton = document.getElementById("monster-select-group-btn");
-            if (monsterButton) {
-                monsterButton.textContent = `Monster (Table ${monsterTableResult} - d20)`;
-                resetButtonGroup("monster-select-group");
-            }
-            showElement(flavor);
-            showGroup("monster-select-group");
-        }
-    });
-    monsterTableGroup.classList.add("hidden");
-    btnContainer.appendChild(monsterTableGroup);
-
-    // Phase 3b: Monster Select
-    const monsterSelectGroup = createButtonGroup({
-        id: "monster-select-group",
-        text: "Monster (d20)",
-        range: [1, 20],
-        onClick: (result, flavor) => {
-            const roll = randomNumber(1, 20);
-            result.textContent = roll;
-
-            const table = MONSTER_TABLES[monsterTableResult];
-            const monster = table[roll] || "ERROR - INVALID ENTRY FROM MONSTER_TABLES";
-
-            flavor.textContent = `${monster} (p. ${121 + roll})`;
-            showElement(flavor);
-        }
-    });
-    monsterSelectGroup.classList.add("hidden");
-    btnContainer.appendChild(monsterSelectGroup);
-
-    // Phase 3c: Event
-    const eventGroup = createButtonGroup({
-        id: "event-group",
-        text: "Event (d100)",
-        range: [1, 100],
-        onClick: (result, flavor) => {
-            const roll = randomNumber(1, 100);
-            result.textContent = roll;
-
-            const event = (roll <= 10) ? 1 : (roll <= 20) ? 11 : (roll <= 30) ? 21 : roll;
-            flavor.textContent = EVENTS[event] || "ERROR - INVALID ENTRY FROM EVENTS";
-            showElement(flavor);
-        }
-    });
-    eventGroup.classList.add("hidden");
-    btnContainer.appendChild(eventGroup);
-
-    // ROLL ALL FUNCTION
-    rollAllButton.onclick = () => {
-        rollAllButton.blur(); // Remove focus from the button
-        
-        // Exploration
-        const explorationRoll = randomNumber(1, 100);
-        const isRoom = explorationRoll > 25;
-        window.rollContext.isRoom = isRoom;
-
-        const explorationResult = document.querySelector("#exploration-group .result-text");
-        const explorationFlavor = document.querySelector("#exploration-group .flavor-text");
-        explorationResult.textContent = `${isRoom ? "Room" : "Corridor"} # ${explorationRoll}`;
-        explorationFlavor.textContent = isRoom
-            ? ROOM_DESCRIPTIONS[explorationRoll] || "A silent and empty room."
-            : CORRIDOR_DESCRIPTIONS[Math.ceil((explorationRoll / 25) * 20)] || "The corridor is eerily quiet.";
-        showElement(explorationFlavor);
-
-        resetAllGroups(phaseGroups);
-        showGroup("encounter-group");
-
-        // Encounter
-        const encounterRoll = randomNumber(1, 20);
-        const encounterResult = document.querySelector("#encounter-group .result-text");
-        encounterResult.textContent = encounterRoll;
-
+        const isRoom = window.rollContext.isRoom;
         const encounterThreshold = isRoom ? 10 : 15;
-        if (encounterRoll >= encounterThreshold) {
-            // Monster Table
+
+        const eventGroupBtn = document.getElementById("event-group-btn");
+        const eventResult = document.querySelector("#event-group .result-text");
+        const eventFlavor = document.querySelector("#event-group .flavor-text");
+
+        if (roll >= encounterThreshold) {
             resetButtonGroup("monster-table-group");
+            resetButtonGroup("monster-select-group");
             showGroup("monster-table-group");
             hideGroup("event-group");
             hideGroup("monster-select-group");
-
-            const monsterTableRoll = randomNumber(1, 6);
-            const tableFlavor = document.querySelector("#monster-table-group .flavor-text");
-            const tableResult = document.querySelector("#monster-table-group .result-text");
-            tableResult.textContent = monsterTableRoll;
-            tableFlavor.textContent = monsterTableRoll <= 3 ? "Table A" : "Table B";
-            monsterTableResult = monsterTableRoll <= 3 ? "A" : "B";
-            showElement(tableFlavor);
-
-            const monsterButton = document.getElementById("monster-select-group-btn");
-            if (monsterButton) {
-                monsterButton.textContent = `Monster (Table ${monsterTableResult} - d20)`;
-                resetButtonGroup("monster-select-group");
-            }
-            showGroup("monster-select-group");
-
-            // Monster Select
-            const monsterRoll = randomNumber(1, 20);
-            const monsterResultText = document.querySelector("#monster-select-group .result-text");
-            const monsterFlavor = document.querySelector("#monster-select-group .flavor-text");
-            monsterResultText.textContent = monsterRoll;
-            const table = MONSTER_TABLES[monsterTableResult];
-            const monster = table[monsterRoll] || "ERROR - INVALID ENTRY FROM MONSTER_TABLES";
-            monsterFlavor.textContent = `${monster} (p. ${121 + monsterRoll})`;
-            showElement(monsterFlavor);
-
         } else {
-            // Event
-            resetButtonGroup("event-group");
-            showGroup("event-group");
             hideGroup("monster-table-group");
             hideGroup("monster-select-group");
 
-            const eventRoll = randomNumber(1, 100);
-            const eventResult = document.querySelector("#event-group .result-text");
-            const eventFlavor = document.querySelector("#event-group .flavor-text");
-            eventResult.textContent = eventRoll;
-            const eventKey = (eventRoll <= 10) ? 1 : (eventRoll <= 20) ? 11 : (eventRoll <= 30) ? 21 : eventRoll;
-            eventFlavor.textContent = EVENTS[eventKey] || "ERROR - INVALID ENTRY FROM EVENTS";
-            showElement(eventFlavor);
+            resetButtonGroup("event-group");
+
+            showGroup("event-group");
+            if (isRoom) {
+                showElement(eventGroupBtn);
+            } else {
+                hideElement(eventGroupBtn);
+                if (eventResult) {
+                    eventResult.textContent = "No event. (Events do not occur in corridors.)";
+                }
+                hideElement(eventFlavor);
+            }
         }
     };
+
+	const encounterGroup = createButtonGroup({
+		id: "encounter-group",
+		text: "Encounter (d20)",
+		range: [1, 20],
+		onClick: encounterOnClick
+	});
+	encounterGroup.classList.add("hidden");
+	btnContainer.appendChild(encounterGroup);
+
+	// Phase 3a: Monster Table
+	monsterTableOnClick = (result, flavor) => {
+		const roll = randomNumber(1, 6);
+		result.textContent = roll;
+		flavor.textContent = roll <= 3 ? "Table A" : "Table B";
+
+		monsterTableResult = roll <= 3 ? "A" : "B";
+		const monsterButton = document.getElementById("monster-select-group-btn");
+		if (monsterButton) {
+			monsterButton.textContent = `Monster (Table ${monsterTableResult} - d20)`;
+			resetButtonGroup("monster-select-group");
+		}
+		showElement(flavor);
+		showGroup("monster-select-group");
+	};
+
+	const monsterTableGroup = createButtonGroup({
+		id: "monster-table-group",
+		text: "Monster Table (d6)",
+		range: [1, 6],
+		onClick: monsterTableOnClick
+	});
+	monsterTableGroup.classList.add("hidden");
+	btnContainer.appendChild(monsterTableGroup);
+
+	// Phase 3b: Monster Select
+	monsterSelectOnClick = (result, flavor) => {
+		const roll = randomNumber(1, 20);
+		result.textContent = roll;
+
+		const table = MONSTER_TABLES[monsterTableResult];
+		const monster = table[roll] || "ERROR - INVALID ENTRY FROM MONSTER_TABLES";
+        const monsterPage = MONSTERS[monster].page || "Unknown";
+
+		flavor.textContent = `${monster} (p. ${monsterPage})`;
+		showElement(flavor);
+	};
+
+	const monsterSelectGroup = createButtonGroup({
+		id: "monster-select-group",
+		text: "Monster (d20)",
+		range: [1, 20],
+		onClick: monsterSelectOnClick
+	});
+	monsterSelectGroup.classList.add("hidden");
+	btnContainer.appendChild(monsterSelectGroup);
+
+	// Phase 3c: Event
+	eventOnClick = (result, flavor) => {
+		const roll = randomNumber(1, 100);
+		result.textContent = roll;
+
+		const event = (roll <= 10) ? 1 : (roll <= 20) ? 11 : (roll <= 30) ? 21 : roll;
+		flavor.textContent = EVENTS[event] || "ERROR - INVALID ENTRY FROM EVENTS";
+		showElement(flavor);
+	};
+
+	const eventGroup = createButtonGroup({
+		id: "event-group",
+		text: "Event (d100)",
+		range: [1, 100],
+		onClick: eventOnClick
+	});
+	eventGroup.classList.add("hidden");
+	btnContainer.appendChild(eventGroup);
+
+	// ROLL ALL FUNCTION
+	rollAllButton.onclick = () => {
+        rollAllButton.blur();
+
+        const resultFlavor = {
+            exploration: [
+                document.querySelector("#exploration-group .result-text"),
+                document.querySelector("#exploration-group .flavor-text")
+            ],
+            encounter: [
+                document.querySelector("#encounter-group .result-text"),
+                document.querySelector("#encounter-group .flavor-text")
+            ],
+            monsterTable: [
+                document.querySelector("#monster-table-group .result-text"),
+                document.querySelector("#monster-table-group .flavor-text")
+            ],
+            monsterSelect: [
+                document.querySelector("#monster-select-group .result-text"),
+                document.querySelector("#monster-select-group .flavor-text")
+            ],
+            event: [
+                document.querySelector("#event-group .result-text"),
+                document.querySelector("#event-group .flavor-text")
+            ]
+        };
+
+        resetAllGroups(phaseGroups);
+
+        explorationOnClick(...resultFlavor.exploration);
+        showGroup("encounter-group");
+
+        encounterOnClick(...resultFlavor.encounter);
+
+        const encounterRoll = parseInt(resultFlavor.encounter[0].textContent);
+        const isRoom = window.rollContext.isRoom;
+        const encounterThreshold = isRoom ? 10 : 15;
+
+        if (encounterRoll >= encounterThreshold) {
+            showGroup("monster-table-group");
+            monsterTableOnClick(...resultFlavor.monsterTable);
+
+            showGroup("monster-select-group");
+            monsterSelectOnClick(...resultFlavor.monsterSelect);
+        }
+    };
+
 }
 </script>
+
 
 <!-- Mechanisms Page Scripts -->
 <script>
